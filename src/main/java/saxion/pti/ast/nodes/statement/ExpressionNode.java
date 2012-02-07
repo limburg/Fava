@@ -15,8 +15,9 @@ public class ExpressionNode extends Node {
 	// Statements die bij deze expressie horen
 	private LinkedList<Factor<?>> expressionList = new LinkedList<Factor<?>>();
 
-	public ExpressionNode(Node parentNode) {
+	public ExpressionNode(Node parentNode, LinkedList<Factor<?>> expressionList) {
 		super(parentNode);
+		addStatements(expressionList);
 	}
 
 	public void addStatements(LinkedList<Factor<?>> expressionList) {

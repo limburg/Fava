@@ -44,8 +44,8 @@ non terminal  Node statement, assignment_statement, procedure_call, if_statement
 non terminal  ExpressionNode expression;
 non terminal  Node designator;
 non terminal  Node static_expression, static_declaration;
-non terminal  Node println_statement, while_statement;
-non terminal  Factor equality_expression, simple_expression, term, factor,factor_operator;
+non terminal  Node term, println_statement, while_statement;
+non terminal  Factor equality_expression, simple_expression, factor,factor_operator;
 non terminal  Node comparator_operator, else_statement, expression_list_;
 non terminal  String identifier_array_, identifier_array;
 
@@ -199,7 +199,7 @@ simple_expression_ ::=
            | PLUS simple_expression 
            | MINUS simple_expression {::};
 term ::= 
-             term_ {::};
+             term_:t {: RESULT = new ExpressionNode(buildTree.getCurrentNode(), t); :};
 term_ ::= factor:e {: RESULT = buildTree.createFactorList(e, null, null); :}
            | factor:e factor_operator:o term_:t {: RESULT = buildTree.createFactorList(e,o,t); :};
 factor_operator ::= 
