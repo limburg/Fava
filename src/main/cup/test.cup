@@ -5,6 +5,10 @@ import saxion.pti.ast.BuildTree;
 import saxion.pti.ast.types.Type;
 import saxion.pti.ast.nodes.Node;
 import saxion.pti.ast.nodes.VariableNode;
+import saxion.pti.ast.types.Operator;
+import saxion.pti.ast.types.Factor;
+import saxion.pti.ast.nodes.statement.ExpressionNode;
+import java.util.Collections;
 import java.util.LinkedList;
 
 action code {: 	
@@ -21,11 +25,11 @@ terminal int  ELSE, WHILE, IF, SYM_BOOLEAN, STATIC;
 terminal int  NEQ, EQ, EQEQ, PLUS, MINUS, ASTERICK, MOD;
 terminal int  FSLASH, BSLASH, LESS, LESSEQ, GREATER, GREATEREQ;
 terminal int  LPAREN, RPAREN, LBRACE, RBRACE,  LSQPAREN, RSQPAREN;
-terminal int  COMMA, SEMICOLON, VOID ;
-terminal int  SYM_INT, STATIC_INT, SYM_STRING;
+terminal int  COMMA, SEMICOLON, VOID, SYM_INT, SYM_STRING;
+terminal Integer STATIC_INT;
 terminal int  FUNC_PRINTLN;
 terminal String IDENTIFIER;
-terminal string STATIC_STRING;
+terminal String STATIC_STRING;
 
 /**
  * Non Terminal definitie.
@@ -37,17 +41,19 @@ non terminal  Type type;
 non terminal  Node procedure_heading, procedure_body;
 non terminal  Node formal_parameter_section;
 non terminal  Node statement, assignment_statement, procedure_call, if_statement;
-non terminal  Node expression, designator;
+non terminal  ExpressionNode expression;
+non terminal  Node designator;
 non terminal  Node static_expression, static_declaration;
 non terminal  Node println_statement, while_statement;
-non terminal  Node equality_expression, simple_expression, term, factor;
-non terminal  Node comparator_operator, factor_operator, else_statement, expression_list_;
+non terminal  Factor equality_expression, simple_expression, term, factor,factor_operator;
+non terminal  Node comparator_operator, else_statement, expression_list_;
 non terminal  String identifier_array_, identifier_array;
 
 non terminal  LinkedList<Node> variable_declaration;
 non terminal  LinkedList<Node> variable_declaration_, procedure_declaration_, static_declaration_;
 non terminal  LinkedList<Node> var_static_declaration_, formal_parameter_, statement_sequence_;
-non terminal  LinkedList<Node> term_, simple_expression_, equality_expression_;
+non terminal  LinkedList<Node> simple_expression_, equality_expression_;
+non terminal  LinkedList<Factor<?>> term_;
 non terminal  LinkedList<String> identifier_list_, identifier_list;
 
 /**
@@ -194,15 +200,15 @@ simple_expression_ ::=
            | MINUS simple_expression {::};
 term ::= 
              term_ {::};
-term_ ::= factor 
-           | factor factor_operator term_ {:buildTree.debugMsg("Termseq ");:};
+term_ ::= factor:e {: RESULT = buildTree.createFactorList(e, null, null); :}
+           | factor:e factor_operator:o term_:t {: RESULT = buildTree.createFactorList(e,o,t); :};
 factor_operator ::= 
-             ASTERICK 
-           | MOD 
-           | FSLASH {:buildTree.debugMsg("Factor Op");:};
+             ASTERICK {: RESULT = new Factor<Operator>(new Operator(sym.ASTERICK)); :}
+           | MOD      {: RESULT = new Factor<Operator>(new Operator(sym.MOD));      :}
+           | FSLASH   {: RESULT = new Factor<Operator>(new Operator(sym.FSLASH));   :};
 factor ::= designator 
-           | STATIC_INT 
-           | STATIC_STRING
-           | LPAREN expression RPAREN {:buildTree.debugMsg("Factor");:};
+           | STATIC_INT:i 	 {: RESULT = new Factor<Integer>(i); :}
+           | STATIC_STRING:s {: RESULT = new Factor<String>(s);  :}
+           | LPAREN expression:e RPAREN {: RESULT = new Factor<ExpressionNode>(e);:};
 designator ::= 
              identifier_array {:buildTree.debugMsg("Designator");:};

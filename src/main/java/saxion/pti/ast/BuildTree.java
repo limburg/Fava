@@ -9,6 +9,7 @@ import saxion.pti.ast.nodes.VariableNode;
 import saxion.pti.ast.nodes.scope.ProcedureNode;
 import saxion.pti.ast.nodes.scope.ProgramNode;
 import saxion.pti.ast.nodes.statement.AssignmentNode;
+import saxion.pti.ast.types.Factor;
 import saxion.pti.ast.types.Type;
 
 /**
@@ -53,8 +54,8 @@ public class BuildTree extends AbstractBuildTree {
 	 * @return
 	 * @throws Exception
 	 */
-	public ProcedureNode createNewProcedure(String p_id,
-			LinkedList<Node> params) throws Exception {
+	public ProcedureNode createNewProcedure(String p_id, LinkedList<Node> params)
+			throws Exception {
 
 		debugMsg("Procedure Heading: " + p_id);
 
@@ -62,8 +63,8 @@ public class BuildTree extends AbstractBuildTree {
 		((ProgramNode) getCurrentNode()).addProcedure(newProcNode);
 
 		for (Node v : params) {
-			debugMsg("Adding param " + ((VariableNode)v).getName());
-			newProcNode.addParameter(((VariableNode)v));
+			debugMsg("Adding param " + ((VariableNode) v).getName());
+			newProcNode.addParameter(((VariableNode) v));
 		}
 
 		return newProcNode;
@@ -91,5 +92,31 @@ public class BuildTree extends AbstractBuildTree {
 		}
 
 		return assignmentNode;
+	}
+
+	/**
+	 * Geeft een lijst met factoren terug.
+	 * 
+	 * @param e
+	 *            Eerste factor
+	 * @param o
+	 *            Tweede factor
+	 * @param t
+	 *            Subfactoren
+	 * @return lijst met factoren
+	 */
+	public LinkedList<Factor<?>> createFactorList(Factor<?> e, Factor<?> o,
+			LinkedList<Factor<?>> t) {
+		LinkedList<Factor<?>> newList = new LinkedList<Factor<?>>();
+
+		if (e != null)
+			newList.add(e);
+
+		if (o != null)
+			newList.add(o);
+
+		if (t != null)
+			newList.addAll(t);
+		return newList;
 	}
 }

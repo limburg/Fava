@@ -19,6 +19,12 @@ public class Main {
 	static final Logger LOGGER = Logger.getLogger(Main.class);
 
 	public static void main(String[] args) {
+		// Check de parameters
+		if (args.length != 1) {
+			LOGGER.error("Invalid number of parameters, usage: Fava <filename>");
+			System.exit(-1);
+		}
+
 		// Stream to read file
 		try {
 			// Open een inputstream
@@ -33,7 +39,7 @@ public class Main {
 					Object result = p.parse().value;
 				} catch (Exception e) {
 					LOGGER.error("Error while parsing.", e);
-					System.exit(-1);
+					System.exit(-3);
 				}
 			} else {
 				throw new IOException("File not found");
@@ -42,7 +48,7 @@ public class Main {
 		// Catches any error conditions
 		catch (IOException e) {
 			LOGGER.error("Unable to read from file: " + args[0]);
-			System.exit(-1);
+			System.exit(-2);
 		}
 
 	}
