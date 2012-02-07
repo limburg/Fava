@@ -1,0 +1,221 @@
+package saxion.pti.generated;
+
+import java_cup.runtime.*;
+import saxion.pti.ast.BuildTree;
+import saxion.pti.ast.types.Type;
+import saxion.pti.ast.nodes.Node;
+import java.util.LinkedList;
+
+action code {: 	
+	// Build Tree met java code, zodat onze CUP file netjes blijft & onze code compileert en makkelijk te debuggen is.
+	private BuildTree buildTree = new BuildTree();
+
+:};
+parser code {::};
+
+/**
+ * Terminal definitie
+ */
+terminal int  ELSE, WHILE, IF, SYM_BOOLEAN, STATIC;
+terminal int  NEQ, EQ, EQEQ, PLUS, MINUS, ASTERICK, MOD;
+terminal int  FSLASH, BSLASH, LESS, LESSEQ, GREATER, GREATEREQ;
+terminal int  LPAREN, RPAREN, LBRACE, RBRACE,  LSQPAREN, RSQPAREN;
+terminal int  COMMA, SEMICOLON, STRING_LITERAL, VOID ;
+terminal int  SYM_INT, STATIC_INT, SYM_STRING;
+terminal int  FUNC_PRINTLN;
+terminal String IDENTIFIER;
+terminal string STATIC_STRING;
+
+/**
+ * Non Terminal definitie.
+ * Non terminals die eindigen op _ zijn toegevoegd om * en + uit BNF op te vangen in CUP.
+ */
+
+non terminal  Node program, procedure_declaration;
+non terminal  Type type;
+non terminal  Node procedure_heading, procedure_body, statement_sequence;
+non terminal  Node identifier, formal_parameter, formal_parameter_section;
+non terminal  Node statement, assignment_statement, procedure_call, if_statement;
+non terminal  Node expression, expression_list, designator;
+non terminal  Node static_expression, static_declaration;
+non terminal  Node structure_type, field_list, println_statement, while_statement;
+non terminal  Node equality_expression, simple_expression, term, factor, dummystart;
+non terminal  Node comparator_operator, factor_operator, else_statement, expression_list_;
+non terminal  String identifier_array_, identifier_array;
+
+non terminal  LinkedList<Node> variable_declaration;
+non terminal  LinkedList<Node> variable_declaration_, procedure_declaration_, static_declaration_;
+non terminal  LinkedList<Node> var_static_declaration_, formal_parameter_, statement_sequence_;
+non terminal  LinkedList<Node> term_, simple_expression_, equality_expression_;
+non terminal  LinkedList<String> identifier_list_, identifier_list;
+
+/**
+ * Voorkeur in symbolen
+ */
+precedence left PLUS, MINUS;
+precedence left ASTERICK, FSLASH, MOD;
+precedence right ELSE;
+
+
+/**
+ * Grammatica regels
+ */
+start with program;
+program::=   
+              var_static_declaration_:v_c_d procedure_declaration_:p_d 
+              {:
+                  buildTree.debugMsg("Program");
+               :};
+var_static_declaration_::=
+              static_declaration_:c_d variable_declaration_:v_d  
+              {:
+                  buildTree.debugMsg("static-Var Decls");
+               :};
+procedure_declaration_::=
+            |  
+              procedure_declaration_ procedure_declaration 
+              {:
+                  buildTree.debugMsg("ProcedureList"); 
+                  
+               :};
+
+variable_declaration_::=               
+               {:
+                  buildTree.debugMsg("End VarsList");
+                :}
+            | 
+              variable_declaration_:lst variable_declaration:v_decl
+              {: 
+                  buildTree.debugMsg("VarsList"); 
+               :};
+
+variable_declaration ::= 
+              type:t_id identifier_list:id_l SEMICOLON 
+              {: 
+              	  // Voeg declaraties toe aan de scope van de huidige node (program of procedure):
+              	  buildTree.addVariableDeclarations(t_id, id_l);
+               :}
+               |
+               type:t_id identifier_list:id_l EQ expression SEMICOLON{:buildTree.debugMsg("Var plus Assignment Statement");:};
+static_declaration_ ::=  
+            | 
+              static_declaration_ static_declaration {::};
+
+identifier_array ::= IDENTIFIER:id identifier_array_:id_a 
+               {:
+                  RESULT =  id + id_a; 
+                  buildTree.debugMsg("Array/ID"+id+" "+id_a);
+                :};
+identifier_array_ ::=
+                {:
+                    RESULT= new String();
+                    buildTree.debugMsg("_E_");
+                :}
+            |  LSQPAREN static_expression:c_e RSQPAREN 
+                {:
+                    RESULT = "[EXP]";
+                    buildTree.debugMsg("Index");
+                 :};
+identifier_list::= 
+               identifier_array:id_a identifier_list_:id_l 
+               {:
+                   id_l.add(id_a);
+                   RESULT = id_l;
+                   buildTree.debugMsg("IDL");
+                :};
+identifier_list_ ::=
+               {:
+                   RESULT = new LinkedList<String>();
+                   buildTree.debugMsg("EndIDList");
+                :}
+            |  COMMA identifier_list:id_l 
+               {:                
+                   RESULT = id_l;
+                   buildTree.debugMsg ("ID-Arry"); 
+                :}; 
+
+//////////////////////////////////////////////////////////////////////////////////
+type ::=        SYM_INT        {: RESULT = Type.newIntType();    :}
+              | SYM_STRING     {: RESULT = Type.newStringType(); :};
+static_declaration ::= 
+              STATIC type IDENTIFIER EQ static_expression SEMICOLON {: buildTree.debugMsg ("StaticDecl"); :}   ;
+procedure_declaration ::= 
+              VOID procedure_heading LBRACE procedure_body RBRACE {: 
+              	buildTree.popNode();
+              :}   ;
+procedure_heading ::= 
+              IDENTIFIER:p_id LPAREN formal_parameter_ RPAREN {:
+              	buildTree.pushNode( buildTree.createNewProcedure(p_id) );
+              :};
+formal_parameter_ ::=  
+              formal_parameter_section 
+            | formal_parameter_ COMMA formal_parameter_section  {::} ;
+formal_parameter_section ::=
+ {:
+                   RESULT = new LinkedList<String>();
+                   buildTree.debugMsg("EndFormList");
+                :}
+            | 
+              type:t_type IDENTIFIER:t_id {: buildTree.addFormalParameter(t_type, t_id); :}; 
+procedure_body ::= 
+              statement_sequence_ {:buildTree.debugMsg("Procedure Body");:};
+statement_sequence_ ::= 
+            | statement_sequence_ statement {:buildTree.debugMsg("Statement Sequence...");:};
+statement ::= 
+             assignment_statement {::}
+           | procedure_call       {::}
+           | if_statement         {::}
+           | println_statement 	  {::}
+           | variable_declaration {::}
+           | while_statement      {::};
+while_statement ::= 
+             WHILE LPAREN expression RPAREN LBRACE statement_sequence_ RBRACE {:buildTree.debugMsg("While Statement");:};           
+println_statement ::= FUNC_PRINTLN LPAREN expression_list_ RPAREN SEMICOLON {:buildTree.debugMsg("Println Function");:};
+if_statement ::= 
+             IF LPAREN expression RPAREN LBRACE statement_sequence_ RBRACE else_statement {:buildTree.debugMsg("If Statement");:};
+else_statement ::= 
+           | ELSE LBRACE statement_sequence_ RBRACE {:buildTree.debugMsg("Else Statement");:};
+procedure_call ::= 
+             IDENTIFIER LPAREN expression_list_ RPAREN SEMICOLON {:buildTree.debugMsg("Procedure Call");:};
+expression_list_ ::= 
+           | expression_list_ expression {:buildTree.debugMsg("Expression List");:};
+assignment_statement ::= 
+             identifier_array:name EQ expression SEMICOLON{:
+				buildTree.createAssignment(name);
+             :};
+static_expression ::= 
+             expression {:buildTree.debugMsg("static Expression");:};
+expression ::= 
+             equality_expression 
+           | equality_expression EQEQ expression 
+           | equality_expression NEQ expression {:buildTree.debugMsg("Expression");:};
+equality_expression ::= 
+             simple_expression equality_expression_ {:buildTree.debugMsg("Eq Expression");:};
+equality_expression_ ::= 
+           | comparator_operator simple_expression {::};
+comparator_operator ::= 
+             LESS 
+           | LESSEQ 
+           | GREATER
+           | GREATEREQ {:buildTree.debugMsg("Comparator Op");:};
+simple_expression ::= 
+             PLUS term simple_expression_ 
+           | MINUS term simple_expression_ 
+           | term simple_expression_ {:buildTree.debugMsg("Simpl Expression");:};
+simple_expression_ ::= 
+           | PLUS simple_expression 
+           | MINUS simple_expression {::};
+term ::= 
+             term_ {::};
+term_ ::= factor 
+           | factor factor_operator term_ {:buildTree.debugMsg("Termseq ");:};
+factor_operator ::= 
+             ASTERICK 
+           | MOD 
+           | FSLASH {:buildTree.debugMsg("Factor Op");:};
+factor ::= designator 
+           | STATIC_INT 
+           | STATIC_STRING
+           | LPAREN expression RPAREN {:buildTree.debugMsg("Factor");:};
+designator ::= 
+             identifier_array {:buildTree.debugMsg("Designator");:};

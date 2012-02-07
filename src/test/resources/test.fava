@@ -1,0 +1,13 @@
+int bla = 0;
+
+void main()
+{	
+	myFunction("Str");
+}
+
+void myFunction(string input)
+{
+	bla = 1;
+	println("Test");
+}
+

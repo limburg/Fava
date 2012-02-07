@@ -1,0 +1,49 @@
+package saxion.pti;
+
+import java.io.IOException;
+import java.io.InputStream;
+
+import org.apache.log4j.Logger;
+
+import saxion.pti.generated.Yylex;
+import saxion.pti.generated.parser;
+
+/**
+ * Main entry point :)
+ * 
+ * @author Joost Limburg
+ * 
+ */
+public class Main {
+	// Logging
+	static final Logger LOGGER = Logger.getLogger(Main.class);
+
+	public static void main(String[] args) {
+		// Stream to read file
+		try {
+			// Open een inputstream
+			InputStream finput = Main.class.getResourceAsStream("../../"
+					+ args[0]);
+
+			// Check de inputstream
+			if (finput != null) {
+				parser p = new parser(new Yylex(finput));
+				try {
+					@SuppressWarnings("unused")
+					Object result = p.parse().value;
+				} catch (Exception e) {
+					LOGGER.error("Error while parsing.", e);
+					System.exit(-1);
+				}
+			} else {
+				throw new IOException("File not found");
+			}
+		}
+		// Catches any error conditions
+		catch (IOException e) {
+			LOGGER.error("Unable to read from file: " + args[0]);
+			System.exit(-1);
+		}
+
+	}
+}
