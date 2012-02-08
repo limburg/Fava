@@ -6,8 +6,12 @@ import saxion.pti.ast.nodes.VariableNode;
 public class AssignmentNode extends Node{
 	private VariableNode variableNode;
 	
-	public AssignmentNode(VariableNode variableNode, Node parentNode) {
+	private ExpressionNode expressionNode;
+	
+	public AssignmentNode(Node parentNode, VariableNode variableNode, ExpressionNode expressionNode) {
 		super(parentNode);
+		this.variableNode = variableNode;
+		this.expressionNode = expressionNode;
 	}
 
 	/**
@@ -15,5 +19,12 @@ public class AssignmentNode extends Node{
 	 */
 	public VariableNode getVariableNode() {
 		return variableNode;
+	}
+
+	/**
+	 * @return the expressionNode
+	 */
+	public ExpressionNode getExpressionNode() {
+		return expressionNode;
 	}
 }

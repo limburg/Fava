@@ -1,4 +1,4 @@
-int bla = 2 * bla;
+int bla = 3 + 2 * bla;
 
 void main()
 {	
@@ -7,7 +7,7 @@ void main()
 
 void myFunction(string input)
 {
-	bla = 1;
+	bla =- 2 / 3 + 4 ;
 	println("Test");
 }
 

@@ -9,6 +9,7 @@ import saxion.pti.ast.nodes.VariableNode;
 import saxion.pti.ast.nodes.scope.ProcedureNode;
 import saxion.pti.ast.nodes.scope.ProgramNode;
 import saxion.pti.ast.nodes.statement.AssignmentNode;
+import saxion.pti.ast.nodes.statement.ExpressionNode;
 import saxion.pti.ast.types.Factor;
 import saxion.pti.ast.types.Type;
 
@@ -77,7 +78,7 @@ public class BuildTree extends AbstractBuildTree {
 	 * @return
 	 * @throws Exception
 	 */
-	public AssignmentNode createAssignment(String variable) throws Exception {
+	public AssignmentNode createAssignment(String variable, ExpressionNode eNode) throws Exception {
 		AssignmentNode assignmentNode = null;
 
 		debugMsg("Assignment Statement");
@@ -85,10 +86,10 @@ public class BuildTree extends AbstractBuildTree {
 			throw new Exception("Variable " + variable
 					+ " not declared at this position.");
 		} else {
-			assignmentNode = new AssignmentNode(
+			assignmentNode = new AssignmentNode(getCurrentNode(),
 					((AbstractNodeWithVars) getCurrentNode())
-							.getDeclaration(variable),
-					getCurrentNode());
+							.getDeclaration(variable),eNode
+					);
 		}
 
 		return assignmentNode;

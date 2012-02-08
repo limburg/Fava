@@ -41,11 +41,10 @@ non terminal  Type type;
 non terminal  Node procedure_heading, procedure_body;
 non terminal  Node formal_parameter_section;
 non terminal  Node statement, assignment_statement, procedure_call, if_statement;
-non terminal  ExpressionNode expression;
 non terminal  Node designator;
 non terminal  Node static_expression, static_declaration;
-non terminal  Node term, println_statement, while_statement;
-non terminal  Factor equality_expression, simple_expression, factor,factor_operator;
+non terminal  Node println_statement, while_statement;
+non terminal  Factor  factor,factor_operator;
 non terminal  Node comparator_operator, else_statement, expression_list_;
 non terminal  String identifier_array_, identifier_array;
 
@@ -53,7 +52,7 @@ non terminal  LinkedList<Node> variable_declaration;
 non terminal  LinkedList<Node> variable_declaration_, procedure_declaration_, static_declaration_;
 non terminal  LinkedList<Node> var_static_declaration_, formal_parameter_, statement_sequence_;
 non terminal  LinkedList<Node> simple_expression_, equality_expression_;
-non terminal  LinkedList<Factor<?>> term_;
+non terminal  LinkedList<Factor<?>> equality_expression, simple_expression, term, term_, expression;
 non terminal  LinkedList<String> identifier_list_, identifier_list;
 
 /**
@@ -174,12 +173,12 @@ expression_list_ ::=
            | expression_list_ expression {:buildTree.debugMsg("Expression List");:};
 assignment_statement ::= 
              identifier_array:name EQ expression SEMICOLON{:
-				buildTree.createAssignment(name);
+				buildTree.createAssignment(name, null);
              :};
 static_expression ::= 
              expression {:buildTree.debugMsg("static Expression");:};
 expression ::= 
-             equality_expression 
+             equality_expression:e 					{: RESULT = e; :}
            | equality_expression EQEQ expression 
            | equality_expression NEQ expression {:buildTree.debugMsg("Expression");:};
 equality_expression ::= 
@@ -192,23 +191,23 @@ comparator_operator ::=
            | GREATER
            | GREATEREQ {:buildTree.debugMsg("Comparator Op");:};
 simple_expression ::= 
-             PLUS term simple_expression_ 
-           | MINUS term simple_expression_ 
-           | term simple_expression_ {:buildTree.debugMsg("Simpl Expression");:};
+             PLUS term simple_expression_ {: buildTree.debugMsg("1Simpl Expression");:}
+           | MINUS term simple_expression_ {: buildTree.debugMsg("2Simpl Expression");:}
+           | term simple_expression_ {: buildTree.debugMsg("3Simpl Expression");:};
 simple_expression_ ::= 
            | PLUS simple_expression 
            | MINUS simple_expression {::};
 term ::= 
-             term_:t {: RESULT = new ExpressionNode(buildTree.getCurrentNode(), t); :};
+             term_:t {: RESULT = t; :};
 term_ ::= factor:e {: RESULT = buildTree.createFactorList(e, null, null); :}
            | factor:e factor_operator:o term_:t {: RESULT = buildTree.createFactorList(e,o,t); :};
 factor_operator ::= 
              ASTERICK {: RESULT = new Factor<Operator>(new Operator(sym.ASTERICK)); :}
            | MOD      {: RESULT = new Factor<Operator>(new Operator(sym.MOD));      :}
            | FSLASH   {: RESULT = new Factor<Operator>(new Operator(sym.FSLASH));   :};
-factor ::= designator 
+factor ::= designator:d		 {: RESULT = new Factor<VariableNode>(d); :} 
            | STATIC_INT:i 	 {: RESULT = new Factor<Integer>(i); :}
            | STATIC_STRING:s {: RESULT = new Factor<String>(s);  :}
-           | LPAREN expression:e RPAREN {: RESULT = new Factor<ExpressionNode>(e);:};
+           | LPAREN expression:e RPAREN {: RESULT = new Factor<LinkedList<Factor<?>>>(e);:};
 designator ::= 
-             identifier_array {:buildTree.debugMsg("Designator");:};
+             identifier_array {: buildTree.:};
