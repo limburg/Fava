@@ -2,26 +2,16 @@ package saxion.pti.ast;
 
 import org.apache.log4j.Logger;
 
-import saxion.pti.ast.nodes.INamedNode;
-import saxion.pti.ast.nodes.Node;
-import saxion.pti.ast.nodes.scope.ProgramNode;
+import saxion.pti.ast.nodes.AbstractScopeNode;
+import saxion.pti.ast.nodes.ProgramNode;
 
-/**
- * Abstracte class die de standaard functies behelst van de BuildTree. We willen
- * alleen de CUP functies zien in de BuildTree.
- * 
- * @author Joost Limburg
- * 
- */
 public abstract class AbstractBuildTree {
 	// Logging
 	static final Logger LOGGER = Logger.getLogger(BuildTree.class);
 
-	// Root node
-	private ProgramNode rootNode = new ProgramNode();
+	protected ProgramNode rootNode;
 
-	// Current node:
-	private Node currentNode = rootNode;
+	protected AbstractScopeNode currentNode;
 
 	// Current diepte in de tree
 	private int depth = 0;
@@ -29,41 +19,38 @@ public abstract class AbstractBuildTree {
 	// Debug switch
 	private boolean debug = true;
 
-	/**
-	 * Teruggeven van de node waarin we zitten:
-	 * 
-	 * @return Node currentNode
-	 */
-	public Node getCurrentNode() {
-		return currentNode;
+	public AbstractBuildTree() {
+		rootNode = new ProgramNode();
+		currentNode = rootNode;
 	}
 
-	/**
-	 * PUSH de huidige context naar currentNode
-	 * 
-	 * @param currentNode
-	 */
-	public void pushNode(Node currentNode) {
-		this.currentNode = currentNode;
+	public void debugMsg(String debugMessage) {
+		if (isDebug()) {
+			// Mooi weergeven:
+			String spaces = "";
+			for (int i = 0; i < depth; i++) {
+				spaces += "\t";
+			}
 
-		debugMsg("-> PUSH node (" + ((INamedNode) currentNode).getName() + ")");
-
-		depth++;
-
-	}
-
-	/**
-	 * POP de huidige node en zet de parent als context.
-	 */
-	public void popNode() {
-		// niet verder dan de root node poppen.
-		if (currentNode.getParentNode() != null && depth > 0) {
-			depth--;
-
-			debugMsg("<- POP node  (" + ((INamedNode) currentNode).getName()
-					+ ")");
-			this.currentNode = currentNode.getParentNode();
+			// Gebruik maken van de standaard logging facility:
+			LOGGER.info(spaces + debugMessage);
 		}
+	}
+
+	public void pushNode(AbstractScopeNode node) {
+		depth++;
+		currentNode = node;
+	}
+
+	public void popNode() {
+		if (currentNode.getParent() != null) {
+			depth--;
+			currentNode = (AbstractScopeNode) currentNode.getParent();
+		}
+	}
+
+	public AbstractScopeNode getCurrentNode() {
+		return currentNode;
 	}
 
 	/**
@@ -81,31 +68,4 @@ public abstract class AbstractBuildTree {
 		this.debug = debug;
 	}
 
-	/**
-	 * Geef debug messages door
-	 * 
-	 * @param debugMessage
-	 */
-	public void debugMsg(String debugMessage) {
-		if (isDebug()) {
-			// Mooi weergeven:
-			String spaces = "";
-			for (int i = 0; i < depth; i++) {
-				spaces += "\t";
-			}
-
-			// Gebruik maken van de standaard logging facility:
-			LOGGER.info(spaces + debugMessage);
-		}
-	}
-
-	/**
-	 * Geeft de root node terug. Handig voor het opzoeken van procedures &
-	 * functions.
-	 * 
-	 * @return programNode De rootnode
-	 */
-	public ProgramNode getRootNode() {
-		return rootNode;
-	}
 }

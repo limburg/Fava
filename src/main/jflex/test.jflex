@@ -65,6 +65,7 @@ staticInteger = 0 | [1-9][0-9]*
 <YYINITIAL> "while"              { return newSymbol(sym.WHILE); }
 <YYINITIAL> "void"               { return newSymbol(sym.VOID); }
 <YYINITIAL> "static"             { return newSymbol(sym.STATIC); }
+<YYINITIAL> "return"             { return newSymbol(sym.RETURN); }
 <YYINITIAL> {
   /**
    * Identifiers

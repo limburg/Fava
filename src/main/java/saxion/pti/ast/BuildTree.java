@@ -1,123 +1,76 @@
 package saxion.pti.ast;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 
-import saxion.pti.ast.nodes.AbstractNodeWithVars;
-import saxion.pti.ast.nodes.Node;
+import saxion.pti.ast.nodes.AbstractNode;
 import saxion.pti.ast.nodes.VariableNode;
-import saxion.pti.ast.nodes.scope.ProcedureNode;
-import saxion.pti.ast.nodes.scope.ProgramNode;
-import saxion.pti.ast.nodes.statement.AssignmentNode;
-import saxion.pti.ast.nodes.statement.ExpressionNode;
-import saxion.pti.ast.types.Factor;
-import saxion.pti.ast.types.Type;
+import saxion.pti.generated.sym;
 
 /**
- * Helper met alle javacode. Maakt het debuggen van toegevoegde
- * javafunctionaliteit aan CUP overzichtelijker en houdt de CUP bestanden
- * schoon.
+ * Omhelst standaard functies om een simpel en overzichtelijke AST te creeren.
  * 
  * @author Joost Limburg
  * 
  */
 public class BuildTree extends AbstractBuildTree {
-	public BuildTree() {
-
-	}
-
 	/**
-	 * Vult de huidige node met variabele declaraties. Kan alleen bij Program en
-	 * Procedure parent nodes.
+	 * Creert een variabele node
 	 * 
-	 * @param t_id
-	 * @param id_l
-	 * @throws Exception
-	 */
-	public void addVariableDeclarations(Type<?> t_id, LinkedList<String> id_l)
-			throws Exception {
-
-		VariableNode n;
-		Iterator<String> li = id_l.iterator();
-		while (li.hasNext()) {
-			n = new VariableNode(t_id, (li.next()));
-			((AbstractNodeWithVars) getCurrentNode()).addDeclaration(n);
-			debugMsg("Added variableDeclaration (" + n.getName() + ")");
-		}
-
-	}
-
-	/**
-	 * Creert een nieuwe node en voegt deze toe aan de parentNode. Kan alleen
-	 * bij Program en Procedure parent nodes.
-	 * 
-	 * @param p_id
-	 * @return
-	 * @throws Exception
-	 */
-	public ProcedureNode createNewProcedure(String p_id, LinkedList<Node> params)
-			throws Exception {
-
-		debugMsg("Procedure Heading: " + p_id);
-
-		ProcedureNode newProcNode = new ProcedureNode(p_id, getCurrentNode());
-		((ProgramNode) getCurrentNode()).addProcedure(newProcNode);
-
-		for (Node v : params) {
-			debugMsg("Adding param " + ((VariableNode) v).getName());
-			newProcNode.addParameter(((VariableNode) v));
-		}
-
-		return newProcNode;
-	}
-
-	/**
-	 * Creert een assignment node en geeft deze terug.
-	 * 
-	 * @param variable
-	 * @return
-	 * @throws Exception
-	 */
-	public AssignmentNode createAssignment(String variable, ExpressionNode eNode) throws Exception {
-		AssignmentNode assignmentNode = null;
-
-		debugMsg("Assignment Statement");
-		if (!((AbstractNodeWithVars) getCurrentNode()).hasDeclaration(variable)) {
-			throw new Exception("Variable " + variable
-					+ " not declared at this position.");
-		} else {
-			assignmentNode = new AssignmentNode(getCurrentNode(),
-					((AbstractNodeWithVars) getCurrentNode())
-							.getDeclaration(variable),eNode
-					);
-		}
-
-		return assignmentNode;
-	}
-
-	/**
-	 * Geeft een lijst met factoren terug.
-	 * 
+	 * @param type
+	 * @param name
 	 * @param e
-	 *            Eerste factor
-	 * @param o
-	 *            Tweede factor
-	 * @param t
-	 *            Subfactoren
-	 * @return lijst met factoren
+	 * @return
 	 */
-	public LinkedList<Factor<?>> createFactorList(Factor<?> e, Factor<?> o,
-			LinkedList<Factor<?>> t) {
-		LinkedList<Factor<?>> newList = new LinkedList<Factor<?>>();
+	private VariableNode<?> createVariableNode(Integer type, String name,
+			AbstractNode e) {
+		VariableNode<?> newVariable = null;
 
-		if (e != null)
-			newList.add(e);
+		if (type == sym.SYM_INT) {
+			newVariable = new VariableNode<Integer>(name);
+		} else if (type == sym.SYM_STRING) {
+			newVariable = new VariableNode<String>(name);
+		} else {
+			new Exception("unknown type for variable " + name);
+		}
 
-		if (o != null)
-			newList.add(o);
+		newVariable.setExpression(e);
 
-		if (t != null)
-			newList.addAll(t);
-		return newList;
+		return newVariable;
+
 	}
+
+	/**
+	 * Voegt een lijst met variabelen toe aan de huidge AbstractScopeNode op de
+	 * stack.
+	 * 
+	 * @param type
+	 * @param n
+	 * @param e
+	 * @throws Exception
+	 */
+	public void addVariables(Integer type, LinkedList<String> n, AbstractNode e)
+			throws Exception {
+		// Voeg iedere var afzonderlijk toe:
+		for (String name : n) {
+			System.out.println("Variable: " + n);
+			// Check of var al toegevoegd is:
+			if (!getCurrentNode().hasVariable(name)) {
+				getCurrentNode().addVariable(createVariableNode(type, name, e));
+			} else {
+				throw new Exception("duplicate variable defined: " + name);
+			}
+		}
+	}
+
+	/**
+	 * Maakt een parameter variabelnode aan.
+	 * 
+	 * @param t
+	 * @param param
+	 * @return
+	 */
+	public VariableNode<?> createParameter(Integer t, String param) {
+		return createVariableNode(t, param, null);
+	}
+
 }

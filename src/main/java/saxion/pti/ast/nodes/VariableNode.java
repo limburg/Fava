@@ -1,25 +1,46 @@
 package saxion.pti.ast.nodes;
 
-import saxion.pti.ast.types.Type;
-
 /**
- * Local or Formal Declaration. varType name
+ * Bij het aanmaken van een variabele wordt deze -eind- node aangemaakt.
+ * @author Joost Limburg
+ *
+ * @param <T> Type variabele (String, int, bool..)
  */
-public class VariableNode extends Node implements INamedNode{
-  private String name;
-  private Type<?> varType;
+public class VariableNode<T> extends AbstractNode{
+	private String name = "";
+	
+	private AbstractNode expression;
+	
+	public VariableNode(String name) {
+		this.setName(name);
+	}
 
-  public VariableNode(Type<?> varType, String name) {
-    super(null);
-    this.name = name;
-    this.varType = varType;
-  }
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
 
-  public String getName() { return name; }
-  public Type<?> getVarType() { return varType; }
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
 
-  public String toString()
-  {
-     return " Declaration "+varType + " named " + name;
-  }
+	/**
+	 * @return the expression
+	 */
+	public AbstractNode getExpression() {
+		return expression;
+	}
+
+	/**
+	 * @param expression the expression to set
+	 */
+	public void setExpression(AbstractNode expression) {
+		this.expression = expression;
+	}
+
 }

@@ -1,13 +1,14 @@
-int bla = 3 + 2 * bla;
+int bla;
+string ga2;
 
-void main()
-{	
-	myFunction("Str");
-}
-
-void myFunction(string input)
+int main()
 {
-	bla =- 2 / 3 + 4 ;
-	println("Test");
+	else
+	return else;
 }
 
+int test()
+{
+	else
+	return else;
+}
