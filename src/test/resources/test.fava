@@ -1,14 +1,27 @@
-int bla;
-string ga2;
+int global_i = 1;
 
-int main()
+void main()
 {
-	else
-	return else;
+	int blaat =2 ;
+	test(2 + 3);
 }
 
-int test()
+int test(int blaat)
 {
-	else
-	return else;
+	if (blaat >= 3)
+	{
+		int g;
+		blaat = 4 == blaat;
+	} else (blaat < 3) {
+		int g;
+	} else {
+		int g;
+	}
+	
+	while(1 == 1)
+	{
+		int g;
+	}
+	
+	return blaat + 1;
 }

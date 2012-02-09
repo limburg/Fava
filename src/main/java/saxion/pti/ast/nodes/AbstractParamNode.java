@@ -4,15 +4,21 @@ import java.util.LinkedList;
 
 /**
  * Abstract class voor nodes met parameters.
+ * 
  * @author Joost Limburg
- *
+ * 
  */
 public abstract class AbstractParamNode extends AbstractScopeNode {
 	// Func/Proc naam
 	private String name;
 
 	private LinkedList<VariableNode<?>> parameters;
-	
+
+	public AbstractParamNode(String name, LinkedList<VariableNode<?>> parameters) {
+		this.name = name;
+		this.parameters = parameters;
+	}
+
 	/**
 	 * @return the name
 	 */
@@ -21,7 +27,8 @@ public abstract class AbstractParamNode extends AbstractScopeNode {
 	}
 
 	/**
-	 * @param name the name to set
+	 * @param name
+	 *            the name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -35,11 +42,11 @@ public abstract class AbstractParamNode extends AbstractScopeNode {
 	}
 
 	/**
-	 * @param parameters the parameters to set
+	 * @param parameters
+	 *            the parameters to set
 	 */
 	public void setParameters(LinkedList<VariableNode<?>> parameters) {
 		this.parameters = parameters;
 	}
-	
-	
+
 }

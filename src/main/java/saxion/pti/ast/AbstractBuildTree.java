@@ -2,6 +2,7 @@ package saxion.pti.ast;
 
 import org.apache.log4j.Logger;
 
+import saxion.pti.ast.nodes.AbstractParamNode;
 import saxion.pti.ast.nodes.AbstractScopeNode;
 import saxion.pti.ast.nodes.ProgramNode;
 
@@ -38,14 +39,35 @@ public abstract class AbstractBuildTree {
 	}
 
 	public void pushNode(AbstractScopeNode node) {
+		if (node instanceof AbstractParamNode)
+			debugMsg("--> Push to func/param ("
+					+ ((AbstractParamNode) node).getName() + ")");
+		else
+			debugMsg("--> Push to " + node.getClass().getSimpleName());
+
 		depth++;
+		
+		// Voeg parents/childs:
+		node.setParent(currentNode);
+		currentNode.addChild(node);
+		
+		// Vervang huidige node:
 		currentNode = node;
 	}
 
 	public void popNode() {
 		if (currentNode.getParent() != null) {
 			depth--;
+
+			if (currentNode instanceof AbstractParamNode)
+				debugMsg("<-- Pop from node ("
+						+ ((AbstractParamNode) currentNode).getName() + ")");
+			else
+				debugMsg("--> Pop from "
+						+ currentNode.getClass().getSimpleName());
+
 			currentNode = (AbstractScopeNode) currentNode.getParent();
+
 		}
 	}
 

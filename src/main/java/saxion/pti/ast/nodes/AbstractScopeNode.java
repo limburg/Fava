@@ -7,13 +7,13 @@ public abstract class AbstractScopeNode extends AbstractNode {
 	protected LinkedList<VariableNode<?>> variables = new LinkedList<VariableNode<?>>();
 	
 	// Lokale programmeerregels in de scope.
-	protected LinkedList<AbstractNode> rules = new LinkedList<AbstractNode>();
+	protected LinkedList<AbstractNode> code = new LinkedList<AbstractNode>();
 	
 	public AbstractScopeNode() {
 	}
 	
-	public LinkedList<AbstractNode> getRules() {
-		return rules;
+	public LinkedList<AbstractNode> getCode() {
+		return code;
 	}
 
 	public LinkedList<VariableNode<?>> getVariables() {
@@ -24,8 +24,8 @@ public abstract class AbstractScopeNode extends AbstractNode {
 		variables.add(variable);
 	}
 	
-	public void addRule(AbstractNode rule) {
-		rules.add(rule);
+	public void addCode(AbstractNode line) {
+		code.add(line);
 	}
 
 	public boolean hasVariable(String name) {

@@ -40,6 +40,16 @@ public class BuildTree extends AbstractBuildTree {
 	}
 
 	/**
+	 * Voegt een regel toe aan de huidige AbstractScopeNode op de stack.
+	 * 
+	 * @param rule De regel die toegevoegd wordt.
+	 */
+	public void addCode(AbstractNode line)
+	{
+		getCurrentNode().addCode(line);
+	}
+	
+	/**
 	 * Voegt een lijst met variabelen toe aan de huidge AbstractScopeNode op de
 	 * stack.
 	 * 
@@ -52,7 +62,7 @@ public class BuildTree extends AbstractBuildTree {
 			throws Exception {
 		// Voeg iedere var afzonderlijk toe:
 		for (String name : n) {
-			System.out.println("Variable: " + n);
+			debugMsg("Adding variable: " + name);
 			// Check of var al toegevoegd is:
 			if (!getCurrentNode().hasVariable(name)) {
 				getCurrentNode().addVariable(createVariableNode(type, name, e));
