@@ -1,31 +1,16 @@
-int global_i = 1;
-
 void main()
 {
-	int blaat =2 ;
-	test(2 + 3);
+	countTo(5);
 }
 
-int test(int blaat)
+int countTo(int num)
 {
-	blaat = 1;
-	if (blaat >= 3)
+	int counter = 0;
+	
+	while(counter < num)
 	{
-		int a;
-	} else (blaat < 3) {
-		int b;
-	} else {
-		int c;
+		counter = counter + 1;
 	}
 	
-	global_i = 1;
-	
-	while(1 == 1)
-	{
-		int g;
-	}
-	
-	ee = 1;
-	
-	return blaat + 1;
+	return counter;
 }

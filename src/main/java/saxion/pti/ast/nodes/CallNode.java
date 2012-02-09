@@ -5,9 +5,9 @@ import java.util.LinkedList;
 public class CallNode extends AbstractNode {
 	private String name;
 
-	private LinkedList<AbstractNode> parameters = new LinkedList<AbstractNode>();
+	private LinkedList<ExpressionNode> parameters = new LinkedList<ExpressionNode>();
 
-	public CallNode(String name, LinkedList<AbstractNode> parameters) {
+	public CallNode(String name, LinkedList<ExpressionNode> parameters) {
 		this.setParameters(parameters);
 		this.setName(name);
 	}
@@ -30,7 +30,7 @@ public class CallNode extends AbstractNode {
 	/**
 	 * @return the parameters
 	 */
-	public LinkedList<AbstractNode> getParameters() {
+	public LinkedList<ExpressionNode> getParameters() {
 		return parameters;
 	}
 
@@ -38,7 +38,7 @@ public class CallNode extends AbstractNode {
 	 * @param parameters
 	 *            the parameters to set
 	 */
-	public void setParameters(LinkedList<AbstractNode> parameters) {
+	public void setParameters(LinkedList<ExpressionNode> parameters) {
 		this.parameters = parameters;
 	}
 

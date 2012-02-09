@@ -38,7 +38,8 @@ non terminal Integer					 var_type;
 non terminal LinkedList<String> 		 var_names;
 
 non terminal LinkedList<VariableNode<?>> param_decl;
-non terminal AbstractNode				 code_body, code_params;
+non terminal AbstractNode				 code_body;
+non terminal LinkedList<ExpressionNode>	 code_params;
 non terminal CallNode					 code_proc;
 non terminal AssignmentNode				 code_assign;
 non terminal IfNode				 		 if_decl,else_decl;
@@ -111,8 +112,8 @@ param_decl	::= var_type:t IDENTIFIER:param
 // Variabele
 var_decl	::= var_type:t var_names:n SEMICOLON				
 				{: buildTree.addVariables(t,n, null); :}|
-				var_type:t var_names:n EQ expr_result SEMICOLON
-				{: buildTree.addVariables(t,n,null); :};
+				var_type:t var_names:n EQ expr_result:expr SEMICOLON
+				{: buildTree.addVariables(t,n,expr); :};
 var_names	::= IDENTIFIER:id 
 				{:LinkedList<String> names = new LinkedList<String>();
 				   names.add(id);
@@ -136,8 +137,17 @@ code_assign	::= IDENTIFIER:id EQ expression:e SEMICOLON
 				   buildTree.addCode( new AssignmentNode(id,e) ); :};
 code_proc	::= IDENTIFIER:id LPAREN code_params:params RPAREN SEMICOLON
 				{: buildTree.debugMsg("Call to proc/func: " + id ); 
-				   buildTree.addCode( new CallNode(id,null) ); :};
-code_params ::= expression | expression COMMA code_params |;
+				   buildTree.addCode( new CallNode(id,params) ); :};
+code_params ::= expression:e 
+				{: LinkedList<ExpressionNode> d =  new LinkedList<ExpressionNode>();
+				   d.add(e);
+				   RESULT = d;
+				:} | 
+				expression:e COMMA code_params:prs 
+				{: LinkedList<ExpressionNode> d = new LinkedList<ExpressionNode>();
+				   d.add(e);
+				   d.addAll(prs);
+				   RESULT = d;  :}|;
 
 
 // While declaratie
