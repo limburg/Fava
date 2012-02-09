@@ -20,7 +20,7 @@ terminal Symbol  ELSE, WHILE, IF, SYM_BOOLEAN, STATIC, RETURN;
 terminal Symbol  NEQ, EQ, EQEQ, PLUS, MINUS, ASTERICK, MOD;
 terminal Symbol  FSLASH, BSLASH, LESS, LESSEQ, GREATER, GREATEREQ;
 terminal Symbol  LPAREN, RPAREN, LBRACE, RBRACE,  LSQPAREN, RSQPAREN;
-terminal Symbol  COMMA, SEMICOLON, VOID, SYM_INT, SYM_STRING;
+terminal Symbol  COMMA, SEMICOLON, VOID, SYM_INT, SYM_STRING, FALSE, TRUE;
 terminal Integer STATIC_INT;
 terminal Symbol  FUNC_PRINTLN;
 terminal String IDENTIFIER;
@@ -123,7 +123,9 @@ var_names	::= IDENTIFIER:id
 				   names.add(id);
 				   names.addAll(ids);
 				   RESULT = names; :};
-var_type 	::= SYM_INT {: RESULT = sym.SYM_INT; :} | SYM_STRING {: RESULT = sym.SYM_STRING; :};
+var_type 	::= SYM_INT 		{: RESULT = sym.SYM_INT; :} | 
+				SYM_STRING 		{: RESULT = sym.SYM_STRING; :} |
+				SYM_BOOLEAN 	{: RESULT = sym.SYM_BOOLEAN; :};
 
 
 // Code
@@ -235,6 +237,8 @@ expr_oper	::= ASTERICK:a 			{: RESULT = a; :} |
 expr_fact	::= IDENTIFIER:id 		{: RESULT = new CallVarNode(id); :}|
 				STATIC_INT:i 		{: RESULT = new StaticValueNode<Integer>(i); :} | 
 				STATIC_STRING:s 	{: RESULT = new StaticValueNode<String>(s);  :} | 
+				TRUE   				{: RESULT = new StaticValueNode<Boolean>(true);  :} | 
+				FALSE  				{: RESULT = new StaticValueNode<Boolean>(false);  :} | 
 				code_proc:c 		{: RESULT = c; :};
 
 

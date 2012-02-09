@@ -29,6 +29,8 @@ public class BuildTree extends AbstractBuildTree {
 			newVariable = new VariableNode<Integer>(name);
 		} else if (type == sym.SYM_STRING) {
 			newVariable = new VariableNode<String>(name);
+		} else if (type == sym.SYM_BOOLEAN) {
+			newVariable = new VariableNode<Boolean>(name);
 		} else {
 			new Exception("unknown type for variable " + name);
 		}
@@ -82,5 +84,4 @@ public class BuildTree extends AbstractBuildTree {
 	public VariableNode<?> createParameter(Integer t, String param) {
 		return createVariableNode(t, param, null);
 	}
-
 }

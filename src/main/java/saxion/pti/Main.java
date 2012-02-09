@@ -5,6 +5,7 @@ import java.io.InputStream;
 
 import org.apache.log4j.Logger;
 
+import saxion.pti.ast.BuildTree;
 import saxion.pti.generated.Yylex;
 import saxion.pti.generated.parser;
 
@@ -35,8 +36,10 @@ public class Main {
 			if (finput != null) {
 				parser p = new parser(new Yylex(finput));
 				try {
-					@SuppressWarnings("unused")
-					Object result = p.parse().value;
+					BuildTree result = (BuildTree)p.parse().value;
+					
+					result.debugMsg("Max depth of tree: " + result.getMaxDepth());
+					
 				} catch (Exception e) {
 					LOGGER.error("Error while parsing.", e);
 					System.exit(-3);

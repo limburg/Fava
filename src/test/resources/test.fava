@@ -1,6 +1,9 @@
+boolean intro = true;
+
 void main()
 {
 	countTo(5);
+	intro = false;
 }
 
 int countTo(int num)

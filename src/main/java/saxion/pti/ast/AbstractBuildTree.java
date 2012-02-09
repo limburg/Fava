@@ -26,6 +26,9 @@ public abstract class AbstractBuildTree {
 	// Current diepte in de tree
 	private int depth = 0;
 
+	// Max depth, voor info, verder geen toegevoegde waarde.
+	private int maxDepth = 0;
+
 	// Debug switch
 	private boolean debug = true;
 
@@ -78,6 +81,10 @@ public abstract class AbstractBuildTree {
 
 		// Vervang huidige node:
 		currentNode = node;
+
+		// Maximale diepte bepalen
+		if (depth > maxDepth)
+			maxDepth = depth;
 	}
 
 	/**
@@ -123,4 +130,13 @@ public abstract class AbstractBuildTree {
 		this.debug = debug;
 	}
 
+	/**
+	 * Maximale diepte in de boom.
+	 * 
+	 * @return maximale diepte.
+	 */
+	public int getMaxDepth() {
+		// TODO Auto-generated method stub
+		return maxDepth;
+	}
 }
