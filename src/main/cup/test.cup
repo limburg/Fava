@@ -20,7 +20,7 @@ terminal Symbol  ELSE, WHILE, IF, SYM_BOOLEAN, STATIC, RETURN;
 terminal Symbol  NEQ, EQ, EQEQ, PLUS, MINUS, ASTERICK, MOD;
 terminal Symbol  FSLASH, BSLASH, LESS, LESSEQ, GREATER, GREATEREQ;
 terminal Symbol  LPAREN, RPAREN, LBRACE, RBRACE,  LSQPAREN, RSQPAREN;
-terminal Symbol  COMMA, SEMICOLON, VOID, SYM_INT, SYM_STRING, FALSE, TRUE;
+terminal Symbol  COMMA, SEMICOLON, VOID, SYM_INT, SYM_STRING, FALSE, TRUE, PRINT;
 terminal Integer STATIC_INT;
 terminal Symbol  FUNC_PRINTLN;
 terminal String IDENTIFIER;
@@ -38,7 +38,7 @@ non terminal Integer					 var_type;
 non terminal LinkedList<String> 		 var_names;
 
 non terminal LinkedList<VariableNode<?>> param_decl;
-non terminal AbstractNode				 code_body;
+non terminal AbstractNode				 code_body, code_print;
 non terminal LinkedList<ExpressionNode>	 code_params;
 non terminal CallNode					 code_proc;
 non terminal AssignmentNode				 code_assign;
@@ -133,7 +133,11 @@ code_body	::= var_decl code_body    |
 				code_assign code_body |	
 				code_proc code_body   |
 				while_decl code_body  |
-				if_decl code_body     |;
+				if_decl code_body     |
+				code_print code_body  |;
+code_print	::= PRINT LPAREN expression:e RPAREN SEMICOLON
+				{: buildTree.debugMsg("Print function called");
+				   buildTree.addCode( new PrintNode(e)); :};
 code_assign	::= IDENTIFIER:id EQ expression:e SEMICOLON 
 				{: buildTree.debugMsg("Assignment to var: " + id ); 
 				   buildTree.addCode( new AssignmentNode(id,e) ); :};

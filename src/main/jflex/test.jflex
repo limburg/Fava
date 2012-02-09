@@ -68,6 +68,7 @@ staticInteger = 0 | [1-9][0-9]*
 <YYINITIAL> "return"             { return newSymbol(sym.RETURN); }
 <YYINITIAL>  "true"				 { return newSymbol(sym.TRUE); }
 <YYINITIAL> "false"				 { return newSymbol(sym.FALSE); }
+<YYINITIAL> "print"			 	 { return newSymbol(sym.PRINT); }
 
 <YYINITIAL> {
   /**

@@ -13,6 +13,13 @@ int countTo(int num)
 	while(counter < num)
 	{
 		counter = counter + 1;
+		
+		if (count > 5)
+		{
+			print("x");
+		} else {
+			print("-");
+		}
 	}
 	
 	return counter;
