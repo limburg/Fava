@@ -141,25 +141,25 @@ code_params ::= expression | expression COMMA code_params |;
 
 
 // While declaratie
-while_decl	::= WHILE LPAREN expr_test RPAREN
-				{: 	buildTree.pushNode(new WhileNode()); :}
+while_decl	::= WHILE LPAREN expr_test:expr RPAREN
+				{: 	buildTree.pushNode(new WhileNode(expr)); :}
 				LBRACE code_body RBRACE else_decl
 				{: 	buildTree.popNode(); :};
 				
 // If/Else declaratie
-if_decl		::= IF LPAREN expr_test RPAREN
-				{: 	buildTree.pushNode(new IfNode()); :}
+if_decl		::= IF LPAREN expr_test:expr RPAREN
+				{: 	buildTree.pushNode(new IfNode(expr)); :}
 				LBRACE code_body RBRACE 
 				{: 	buildTree.popNode(); :} else_decl;
-else_decl	::= ELSE LPAREN expr_test RPAREN 
-				{: 	buildTree.pushNode(new IfNode()); :}
+else_decl	::= ELSE LPAREN expr_test:expr RPAREN 
+				{: 	buildTree.pushNode(new IfNode(expr)); :}
 				LBRACE code_body RBRACE 
 				{: 	buildTree.popNode(); :} else_decl |
 				ELSE 
-				{: 	buildTree.pushNode(new IfNode()); :}
+				{: 	buildTree.pushNode(new IfNode(null)); :}
 				LBRACE code_body RBRACE 
 				{: 	buildTree.popNode(); :} | 
-				{: 	buildTree.popNode(); :};
+				;
 				
 // Topdomein van een expressie
 expression	::= expr_test:e 		{:	buildTree.debugMsg("boolean Expression");

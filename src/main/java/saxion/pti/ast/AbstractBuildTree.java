@@ -6,12 +6,21 @@ import saxion.pti.ast.nodes.AbstractParamNode;
 import saxion.pti.ast.nodes.AbstractScopeNode;
 import saxion.pti.ast.nodes.ProgramNode;
 
+/**
+ * Abstracte Boom Bouwer. Hierin staan standaard functies die we gebruiken, om
+ * onze BuildTree class niet mee te bevuilen.
+ * 
+ * @author Joost Limburg.
+ * 
+ */
 public abstract class AbstractBuildTree {
 	// Logging
 	static final Logger LOGGER = Logger.getLogger(BuildTree.class);
 
+	// Root node
 	protected ProgramNode rootNode;
 
+	// Huidige node.
 	protected AbstractScopeNode currentNode;
 
 	// Current diepte in de tree
@@ -20,11 +29,20 @@ public abstract class AbstractBuildTree {
 	// Debug switch
 	private boolean debug = true;
 
+	/**
+	 * Abstracte tree voor het bouwen van de AST.
+	 */
 	public AbstractBuildTree() {
 		rootNode = new ProgramNode();
 		currentNode = rootNode;
 	}
 
+	/**
+	 * Weergeven van debug informatie
+	 * 
+	 * @param debugMessage
+	 *            de debug informatie
+	 */
 	public void debugMsg(String debugMessage) {
 		if (isDebug()) {
 			// Mooi weergeven:
@@ -38,6 +56,13 @@ public abstract class AbstractBuildTree {
 		}
 	}
 
+	/**
+	 * Veranderd de huidige node naar de meegegeven node. De huidige node wordt
+	 * automatisch parent van de meegegeven node en vice versa.
+	 * 
+	 * @param node
+	 *            Nieuwe node.
+	 */
 	public void pushNode(AbstractScopeNode node) {
 		if (node instanceof AbstractParamNode)
 			debugMsg("--> Push to func/param ("
@@ -46,15 +71,18 @@ public abstract class AbstractBuildTree {
 			debugMsg("--> Push to " + node.getClass().getSimpleName());
 
 		depth++;
-		
+
 		// Voeg parents/childs:
 		node.setParent(currentNode);
 		currentNode.addChild(node);
-		
+
 		// Vervang huidige node:
 		currentNode = node;
 	}
 
+	/**
+	 * De huidige node wordt vervangen door de parent van de node.
+	 */
 	public void popNode() {
 		if (currentNode.getParent() != null) {
 			depth--;
@@ -71,6 +99,11 @@ public abstract class AbstractBuildTree {
 		}
 	}
 
+	/**
+	 * Geeft de huidige node terug.
+	 * 
+	 * @return huidige node.
+	 */
 	public AbstractScopeNode getCurrentNode() {
 		return currentNode;
 	}
