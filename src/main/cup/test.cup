@@ -28,7 +28,6 @@ terminal String STATIC_STRING;
 
 /**
  * Non Terminal definitie.
- * Non terminals die eindigen op _ zijn toegevoegd om * en + uit BNF op te vangen in CUP.
  */
 non terminal BuildTree					 program;
 non terminal AbstractNode 				 program_;
