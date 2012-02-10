@@ -19,7 +19,7 @@
 		<!-- tools -->
 		<jflex.version>1.4.3</jflex.version>
 		<cup.version>0.11a</cup.version>
-		<bcel.version>5.2</bcel.version>
+		<jasmin.version>2.4</jasmin.version>
 		<!-- maven -->
 		<ctz.version>1.6.4</ctz.version>
 		<!-- logging  -->
@@ -69,13 +69,15 @@
 			<version>${cup.version}</version>
 		</dependency>
 
-		<!-- BCel Library (afkomstig van de standaard maven repo) -->
+		<!-- Jasmin Library (afkomstig van locale repo dir) -->
+		<!-- Geen goed idee:
 		<dependency>
-			<groupId>org.apache.bcel</groupId>
-			<artifactId>bcel</artifactId>
-			<version>${bcel.version}</version>
+			<groupId>net.sf.jasmin</groupId>
+			<artifactId>jasmin</artifactId>
+			<version>${jasmin.version}</version>
 		</dependency>
-
+ 		 -->
+ 		 
 		<!-- Logging, LOG4J -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
