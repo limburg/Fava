@@ -9,7 +9,7 @@
 	<!-- Project omschrijving -->
 	<name>Funky to Java compiler</name>
 	<inceptionYear>2011</inceptionYear>
-	<description></description>
+	<description>PTI opdracht, gemaakt door Joost Limburg</description>
 	<prerequisites>
 		<maven>2.0.9</maven>
 	</prerequisites>
@@ -19,7 +19,6 @@
 		<!-- tools -->
 		<jflex.version>1.4.3</jflex.version>
 		<cup.version>0.11a</cup.version>
-		<jasmin.version>2.4</jasmin.version>
 		<!-- maven -->
 		<ctz.version>1.6.4</ctz.version>
 		<!-- logging  -->
@@ -69,15 +68,6 @@
 			<version>${cup.version}</version>
 		</dependency>
 
-		<!-- Jasmin Library (afkomstig van locale repo dir) -->
-		<!-- Geen goed idee:
-		<dependency>
-			<groupId>net.sf.jasmin</groupId>
-			<artifactId>jasmin</artifactId>
-			<version>${jasmin.version}</version>
-		</dependency>
- 		 -->
- 		 
 		<!-- Logging, LOG4J -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
