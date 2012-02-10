@@ -88,9 +88,10 @@ func_decl 	::= var_type IDENTIFIER:id
 					buildTree.pushNode(new FunctionNode(id, params)); 
 				:} 
 				LBRACE code_body
-					RETURN expression SEMICOLON 
+					RETURN expression:expr SEMICOLON 
 				RBRACE
 				{:
+					buildTree.addReturnStatement(expr);
 					buildTree.popNode();
 				:}
 				;

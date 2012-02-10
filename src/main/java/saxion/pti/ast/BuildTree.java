@@ -3,6 +3,8 @@ package saxion.pti.ast;
 import java.util.LinkedList;
 
 import saxion.pti.ast.nodes.AbstractNode;
+import saxion.pti.ast.nodes.ExpressionNode;
+import saxion.pti.ast.nodes.FunctionNode;
 import saxion.pti.ast.nodes.VariableNode;
 import saxion.pti.generated.sym;
 
@@ -22,7 +24,7 @@ public class BuildTree extends AbstractBuildTree {
 	 * @return
 	 */
 	private VariableNode<?> createVariableNode(Integer type, String name,
-			AbstractNode e) {
+			ExpressionNode e) {
 		VariableNode<?> newVariable = null;
 
 		if (type == sym.SYM_INT) {
@@ -60,7 +62,7 @@ public class BuildTree extends AbstractBuildTree {
 	 * @param e
 	 * @throws Exception
 	 */
-	public void addVariables(Integer type, LinkedList<String> n, AbstractNode e)
+	public void addVariables(Integer type, LinkedList<String> n, ExpressionNode e)
 			throws Exception {
 		// Voeg iedere var afzonderlijk toe:
 		for (String name : n) {
@@ -83,5 +85,14 @@ public class BuildTree extends AbstractBuildTree {
 	 */
 	public VariableNode<?> createParameter(Integer t, String param) {
 		return createVariableNode(t, param, null);
+	}
+	
+	/**
+	 * Voegt een return statement toe aan een function op de stack.
+	 */
+	public void addReturnStatement(ExpressionNode expr)
+	{
+		if (getCurrentNode() instanceof FunctionNode)
+			getCurrentNode().setReturnStatement(expr);
 	}
 }

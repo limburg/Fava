@@ -6,6 +6,7 @@ import java.io.InputStream;
 import org.apache.log4j.Logger;
 
 import saxion.pti.ast.BuildTree;
+import saxion.pti.ast.VisitTree;
 import saxion.pti.generated.Yylex;
 import saxion.pti.generated.parser;
 
@@ -39,6 +40,9 @@ public class Main {
 					BuildTree result = (BuildTree)p.parse().value;
 					
 					result.debugMsg("Max depth of tree: " + result.getMaxDepth());
+					
+					VisitTree treeVisitor = new VisitTree(result);
+					treeVisitor.start();
 					
 				} catch (Exception e) {
 					LOGGER.error("Error while parsing.", e);

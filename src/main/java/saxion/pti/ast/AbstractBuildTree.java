@@ -60,6 +60,14 @@ public abstract class AbstractBuildTree {
 	}
 
 	/**
+	 * Geeft de rootNode terug.
+	 */
+	public ProgramNode getRootNode()
+	{
+		return rootNode;
+	}
+	
+	/**
 	 * Veranderd de huidige node naar de meegegeven node. De huidige node wordt
 	 * automatisch parent van de meegegeven node en vice versa.
 	 * 
@@ -79,6 +87,10 @@ public abstract class AbstractBuildTree {
 		node.setParent(currentNode);
 		currentNode.addChild(node);
 
+		// Voeg toe aan parent code-block als het niet de programnode is
+		if (!( currentNode instanceof ProgramNode))
+			currentNode.addCode(node);
+		
 		// Vervang huidige node:
 		currentNode = node;
 

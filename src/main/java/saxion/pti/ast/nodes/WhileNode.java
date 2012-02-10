@@ -1,5 +1,7 @@
 package saxion.pti.ast.nodes;
 
+import saxion.pti.ast.VisitTree;
+
 public class WhileNode extends AbstractParamNode {
 	private ExpressionNode statement;
 
@@ -20,6 +22,11 @@ public class WhileNode extends AbstractParamNode {
 	 */
 	public void setStatement(ExpressionNode statement) {
 		this.statement = statement;
+	}
+
+	@Override
+	public void accept(VisitTree tree) {
+		tree.visit(this);
 	}
 
 }

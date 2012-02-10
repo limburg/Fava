@@ -2,6 +2,8 @@ package saxion.pti.ast.nodes;
 
 import java.util.LinkedList;
 
+import saxion.pti.ast.VisitTree;
+
 /**
  * Abstract class voor alle nodes.
  * 
@@ -9,6 +11,7 @@ import java.util.LinkedList;
  * 
  */
 public abstract class AbstractNode {
+	protected boolean visited = false;
 
 	private AbstractNode parent;
 
@@ -17,6 +20,11 @@ public abstract class AbstractNode {
 	public AbstractNode() {
 
 	}
+
+	/**
+	 * Visitor voor prettyprinting Jasmin code
+	 */
+	public abstract void accept(VisitTree tree);
 
 	/**
 	 * @return the childs
@@ -45,5 +53,12 @@ public abstract class AbstractNode {
 	 */
 	public void setParent(AbstractNode parent) {
 		this.parent = parent;
+	}
+
+	/**
+	 * @return the visited
+	 */
+	public boolean isVisited() {
+		return visited;
 	}
 }

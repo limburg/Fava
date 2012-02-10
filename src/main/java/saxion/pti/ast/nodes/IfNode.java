@@ -1,5 +1,7 @@
 package saxion.pti.ast.nodes;
 
+import saxion.pti.ast.VisitTree;
+
 public class IfNode extends AbstractParamNode {
 	private ExpressionNode statement;
 	
@@ -21,4 +23,8 @@ public class IfNode extends AbstractParamNode {
 		this.statement = statement;
 	}
 
+	@Override
+	public void accept(VisitTree tree) {
+		tree.visit(this);
+	}
 }

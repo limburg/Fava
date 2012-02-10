@@ -2,6 +2,8 @@ package saxion.pti.ast.nodes;
 
 import java.util.LinkedList;
 
+import saxion.pti.ast.VisitTree;
+
 public class CallNode extends AbstractNode {
 	private String name;
 
@@ -42,4 +44,8 @@ public class CallNode extends AbstractNode {
 		this.parameters = parameters;
 	}
 
+	@Override
+	public void accept(VisitTree tree) {
+		tree.visit(this);
+	}
 }

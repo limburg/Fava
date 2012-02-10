@@ -2,6 +2,8 @@ package saxion.pti.ast.nodes;
 
 import java.util.LinkedList;
 
+import saxion.pti.ast.VisitTree;
+
 public class ProgramNode extends AbstractScopeNode {
 	private LinkedList<ProcedureNode> procedures = new LinkedList<ProcedureNode>();
 	
@@ -35,6 +37,11 @@ public class ProgramNode extends AbstractScopeNode {
 		}
 
 		return false;
+	}
+
+	@Override
+	public void accept(VisitTree tree) {
+		tree.visit(this);
 	}
 	
 }

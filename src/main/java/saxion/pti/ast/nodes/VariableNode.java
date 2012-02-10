@@ -1,5 +1,7 @@
 package saxion.pti.ast.nodes;
 
+import saxion.pti.ast.VisitTree;
+
 /**
  * Bij het aanmaken van een variabele wordt deze -eind- node aangemaakt.
  * @author Joost Limburg
@@ -11,7 +13,7 @@ public class VariableNode<T> extends AbstractNode{
 	
 	private int arraySize = 0;
 	
-	private AbstractNode expression;
+	private ExpressionNode expression;
 	
 	public VariableNode(String name) {
 		this.setName(name);
@@ -34,14 +36,14 @@ public class VariableNode<T> extends AbstractNode{
 	/**
 	 * @return the expression
 	 */
-	public AbstractNode getExpression() {
+	public ExpressionNode getExpression() {
 		return expression;
 	}
 
 	/**
 	 * @param expression the expression to set
 	 */
-	public void setExpression(AbstractNode expression) {
+	public void setExpression(ExpressionNode expression) {
 		this.expression = expression;
 	}
 
@@ -62,5 +64,10 @@ public class VariableNode<T> extends AbstractNode{
 	public boolean isArray()
 	{
 		return arraySize > 0;
+	}
+
+	@Override
+	public void accept(VisitTree tree) {
+		tree.visit(this);
 	}
 }

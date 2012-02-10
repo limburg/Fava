@@ -1,5 +1,7 @@
 package saxion.pti.ast.nodes;
 
+import saxion.pti.ast.VisitTree;
+
 public class PrintNode extends AbstractNode {
 	private ExpressionNode expression;
 
@@ -20,5 +22,10 @@ public class PrintNode extends AbstractNode {
 	 */
 	public void setExpression(ExpressionNode expression) {
 		this.expression = expression;
+	}
+	
+	@Override
+	public void accept(VisitTree tree) {
+		tree.visit(this);
 	}
 }

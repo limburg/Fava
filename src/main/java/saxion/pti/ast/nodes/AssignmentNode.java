@@ -1,5 +1,7 @@
 package saxion.pti.ast.nodes;
 
+import saxion.pti.ast.VisitTree;
+
 public class AssignmentNode extends AbstractNode {
 	private String variable;
 	
@@ -37,4 +39,8 @@ public class AssignmentNode extends AbstractNode {
 		this.expression = expression;
 	}
 
+	@Override
+	public void accept(VisitTree tree) {
+		tree.visit(this);
+	}
 }

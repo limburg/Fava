@@ -1,5 +1,7 @@
 package saxion.pti.ast.nodes;
 
+import saxion.pti.ast.VisitTree;
+
 public class CallVarNode extends AbstractNode {
 	private String name;
 	
@@ -20,5 +22,10 @@ public class CallVarNode extends AbstractNode {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	@Override
+	public void accept(VisitTree tree) {
+		tree.visit(this);
 	}
 }
