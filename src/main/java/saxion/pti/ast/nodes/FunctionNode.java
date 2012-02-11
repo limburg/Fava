@@ -6,7 +6,7 @@ import saxion.pti.ast.VisitTree;
 
 public class FunctionNode  extends AbstractParamNode {
 
-	public FunctionNode(String name, LinkedList<VariableNode<?>> parameters) {
+	public FunctionNode(String name, LinkedList<VariableNode> parameters) {
 		super(name, parameters);
 		// TODO Auto-generated constructor stub
 	}

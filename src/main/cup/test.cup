@@ -36,7 +36,7 @@ non terminal AbstractNode				 proc_decl, func_decl, var_decl;
 non terminal Integer					 var_type;
 non terminal LinkedList<String> 		 var_names;
 
-non terminal LinkedList<VariableNode<?>> param_decl;
+non terminal LinkedList<VariableNode> 	 param_decl;
 non terminal AbstractNode				 code_body, code_print;
 non terminal LinkedList<ExpressionNode>	 code_params;
 non terminal CallNode					 code_proc;
@@ -98,15 +98,15 @@ func_decl 	::= var_type IDENTIFIER:id
 
 // Parameters
 param_decl	::= var_type:t IDENTIFIER:param
-				{:LinkedList<VariableNode<?>> params = new LinkedList<VariableNode<?>>();
+				{:LinkedList<VariableNode> params = new LinkedList<VariableNode>();
 				   params.add(buildTree.createParameter(t, param));
 				   RESULT = params; :}|
 				var_type:t IDENTIFIER:param COMMA param_decl:prms
-				{:LinkedList<VariableNode<?>> params = new LinkedList<VariableNode<?>>();
+				{:LinkedList<VariableNode> params = new LinkedList<VariableNode>();
 				   params.add(buildTree.createParameter(t, param));
 				   params.addAll(prms);
 				   RESULT = params; :}|
-				{: RESULT = new LinkedList<VariableNode<?>>(); :};
+				{: RESULT = new LinkedList<VariableNode>(); :};
 		
 				
 // Variabele

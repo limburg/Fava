@@ -4,7 +4,7 @@ import java.util.LinkedList;
 
 public abstract class AbstractScopeNode extends AbstractNode {
 	// Lokale variabelen (of als het ProgramNode is: globale).
-	protected LinkedList<VariableNode<?>> variables = new LinkedList<VariableNode<?>>();
+	protected LinkedList<VariableNode> variables = new LinkedList<VariableNode>();
 
 	// Lokale programmeerregels in de scope.
 	protected LinkedList<AbstractNode> code = new LinkedList<AbstractNode>();
@@ -19,11 +19,11 @@ public abstract class AbstractScopeNode extends AbstractNode {
 		return code;
 	}
 
-	public LinkedList<VariableNode<?>> getVariables() {
+	public LinkedList<VariableNode> getVariables() {
 		return variables;
 	}
 
-	public void addVariable(VariableNode<?> variable) {
+	public void addVariable(VariableNode variable) {
 		variables.add(variable);
 	}
 
@@ -32,7 +32,7 @@ public abstract class AbstractScopeNode extends AbstractNode {
 	}
 
 	public boolean hasVariable(String name) {
-		for (VariableNode<?> var : variables) {
+		for (VariableNode var : variables) {
 			if (var.getName().equalsIgnoreCase(name))
 				return true;
 		}

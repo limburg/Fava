@@ -1,0 +1,26 @@
+boolean intro = true;
+
+void main()
+{
+	countTo(5);
+	intro = false;
+}
+
+int countTo(int num)
+{
+	int counter = 0;
+	
+	while(counter < num)
+	{
+		counter = counter + 1;
+		
+		if (count > 5)
+		{
+			print("x");
+		} else {
+			print("-");
+		}
+	}
+	
+	return counter;
+}

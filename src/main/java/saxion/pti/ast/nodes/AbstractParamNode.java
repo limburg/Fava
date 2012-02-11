@@ -12,9 +12,9 @@ public abstract class AbstractParamNode extends AbstractScopeNode {
 	// Func/Proc naam
 	private String name;
 
-	private LinkedList<VariableNode<?>> parameters;
+	private LinkedList<VariableNode> parameters;
 
-	public AbstractParamNode(String name, LinkedList<VariableNode<?>> parameters) {
+	public AbstractParamNode(String name, LinkedList<VariableNode> parameters) {
 		this.name = name;
 		this.parameters = parameters;
 	}
@@ -37,7 +37,7 @@ public abstract class AbstractParamNode extends AbstractScopeNode {
 	/**
 	 * @return the parameters
 	 */
-	public LinkedList<VariableNode<?>> getParameters() {
+	public LinkedList<VariableNode> getParameters() {
 		return parameters;
 	}
 
@@ -45,7 +45,7 @@ public abstract class AbstractParamNode extends AbstractScopeNode {
 	 * @param parameters
 	 *            the parameters to set
 	 */
-	public void setParameters(LinkedList<VariableNode<?>> parameters) {
+	public void setParameters(LinkedList<VariableNode> parameters) {
 		this.parameters = parameters;
 	}
 

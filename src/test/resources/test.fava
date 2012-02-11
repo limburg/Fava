@@ -1,26 +1,6 @@
-boolean intro = true;
+int test = 0;
 
-void main()
+int main(string grr)
 {
-	countTo(5);
-	intro = false;
-}
-
-int countTo(int num)
-{
-	int counter = 0;
-	
-	while(counter < num)
-	{
-		counter = counter + 1;
-		
-		if (count > 5)
-		{
-			print("x");
-		} else {
-			print("-");
-		}
-	}
-	
-	return counter;
+	return 0;
 }

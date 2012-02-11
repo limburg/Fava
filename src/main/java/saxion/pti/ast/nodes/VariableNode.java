@@ -4,19 +4,32 @@ import saxion.pti.ast.VisitTree;
 
 /**
  * Bij het aanmaken van een variabele wordt deze -eind- node aangemaakt.
+ * 
  * @author Joost Limburg
- *
- * @param <T> Type variabele (String, int, bool..)
+ * 
+ * @param <T>
+ *            Type variabele (String, int, bool..)
  */
-public class VariableNode<T> extends AbstractNode{
+public class VariableNode extends AbstractNode {
+	// Generic opslaan
+	private Class type = null;
+
 	private String name = "";
-	
+
 	private int arraySize = 0;
-	
+
 	private ExpressionNode expression;
-	
-	public VariableNode(String name) {
+
+	public VariableNode(String name, @SuppressWarnings("rawtypes") Class type) {
 		this.setName(name);
+		this.type = type;
+	}
+
+	/**
+	 * Geef de generic terug
+	 */
+	public Class getType() {
+		return type;
 	}
 
 	/**
@@ -27,7 +40,8 @@ public class VariableNode<T> extends AbstractNode{
 	}
 
 	/**
-	 * @param name the name to set
+	 * @param name
+	 *            the name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -41,7 +55,8 @@ public class VariableNode<T> extends AbstractNode{
 	}
 
 	/**
-	 * @param expression the expression to set
+	 * @param expression
+	 *            the expression to set
 	 */
 	public void setExpression(ExpressionNode expression) {
 		this.expression = expression;
@@ -55,14 +70,14 @@ public class VariableNode<T> extends AbstractNode{
 	}
 
 	/**
-	 * @param arraySize the arraySize to set
+	 * @param arraySize
+	 *            the arraySize to set
 	 */
 	public void setArraySize(int arraySize) {
 		this.arraySize = arraySize;
 	}
 
-	public boolean isArray()
-	{
+	public boolean isArray() {
 		return arraySize > 0;
 	}
 

@@ -23,16 +23,16 @@ public class BuildTree extends AbstractBuildTree {
 	 * @param e
 	 * @return
 	 */
-	private VariableNode<?> createVariableNode(Integer type, String name,
+	private VariableNode createVariableNode(Integer type, String name,
 			ExpressionNode e) {
-		VariableNode<?> newVariable = null;
+		VariableNode newVariable = null;
 
 		if (type == sym.SYM_INT) {
-			newVariable = new VariableNode<Integer>(name);
+			newVariable = new VariableNode(name, Integer.class);
 		} else if (type == sym.SYM_STRING) {
-			newVariable = new VariableNode<String>(name);
+			newVariable = new VariableNode(name, String.class);
 		} else if (type == sym.SYM_BOOLEAN) {
-			newVariable = new VariableNode<Boolean>(name);
+			newVariable = new VariableNode(name, Boolean.class);
 		} else {
 			new Exception("unknown type for variable " + name);
 		}
@@ -83,7 +83,7 @@ public class BuildTree extends AbstractBuildTree {
 	 * @param param
 	 * @return
 	 */
-	public VariableNode<?> createParameter(Integer t, String param) {
+	public VariableNode createParameter(Integer t, String param) {
 		return createVariableNode(t, param, null);
 	}
 	
