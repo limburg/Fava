@@ -46,13 +46,13 @@ public class BuildTree extends AbstractBuildTree {
 	/**
 	 * Voegt een regel toe aan de huidige AbstractScopeNode op de stack.
 	 * 
-	 * @param rule De regel die toegevoegd wordt.
+	 * @param rule
+	 *            De regel die toegevoegd wordt.
 	 */
-	public void addCode(AbstractNode line)
-	{
+	public void addCode(AbstractNode line) {
 		getCurrentNode().addCode(line);
 	}
-	
+
 	/**
 	 * Voegt een lijst met variabelen toe aan de huidge AbstractScopeNode op de
 	 * stack.
@@ -62,8 +62,8 @@ public class BuildTree extends AbstractBuildTree {
 	 * @param e
 	 * @throws Exception
 	 */
-	public void addVariables(Integer type, LinkedList<String> n, ExpressionNode e)
-			throws Exception {
+	public void addVariables(Integer type, LinkedList<String> n,
+			ExpressionNode e) throws Exception {
 		// Voeg iedere var afzonderlijk toe:
 		for (String name : n) {
 			debugMsg("Adding variable: " + name);
@@ -86,13 +86,34 @@ public class BuildTree extends AbstractBuildTree {
 	public VariableNode createParameter(Integer t, String param) {
 		return createVariableNode(t, param, null);
 	}
-	
+
 	/**
 	 * Voegt een return statement toe aan een function op de stack.
 	 */
-	public void addReturnStatement(ExpressionNode expr)
-	{
+	public void addReturnStatement(ExpressionNode expr) {
 		if (getCurrentNode() instanceof FunctionNode)
 			getCurrentNode().setReturnStatement(expr);
+	}
+
+	/**
+	 * Creert een nieuwe functionNode.
+	 * 
+	 * @param id
+	 * @param t
+	 * @param params
+	 * @return
+	 */
+	public FunctionNode createFunctionNode(String id, Integer t,
+			LinkedList<VariableNode> params) {
+		if (t == sym.SYM_INT) {
+			return new FunctionNode(id, Integer.class, params);
+		} else if (t == sym.SYM_STRING) {
+			return new FunctionNode(id, String.class, params);
+		} else if (t == sym.SYM_BOOLEAN) {
+			return new FunctionNode(id, Boolean.class, params);
+		} else {
+			new Exception("unknown returntype for function " + id);
+		}
+		return null;
 	}
 }

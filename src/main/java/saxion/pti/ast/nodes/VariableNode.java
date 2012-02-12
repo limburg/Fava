@@ -12,7 +12,7 @@ import saxion.pti.ast.VisitTree;
  */
 public class VariableNode extends AbstractNode {
 	// Generic opslaan
-	private Class type = null;
+	private Class<?> type = null;
 
 	private String name = "";
 
@@ -20,7 +20,7 @@ public class VariableNode extends AbstractNode {
 
 	private ExpressionNode expression;
 
-	public VariableNode(String name, @SuppressWarnings("rawtypes") Class type) {
+	public VariableNode(String name, Class<?> type) {
 		this.setName(name);
 		this.type = type;
 	}
@@ -28,7 +28,7 @@ public class VariableNode extends AbstractNode {
 	/**
 	 * Geef de generic terug
 	 */
-	public Class getType() {
+	public Class<?> getType() {
 		return type;
 	}
 

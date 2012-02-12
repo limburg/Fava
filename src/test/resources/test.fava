@@ -2,5 +2,6 @@ int test = 0;
 
 int main(string grr)
 {
+	print("TEST");
 	return 0;
 }

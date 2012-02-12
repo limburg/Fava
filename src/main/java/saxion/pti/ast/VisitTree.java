@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import org.apache.log4j.Logger;
 
 import saxion.pti.ast.nodes.AbstractNode;
+import saxion.pti.ast.nodes.AbstractParamNode;
 import saxion.pti.ast.nodes.AssignmentNode;
 import saxion.pti.ast.nodes.CallNode;
 import saxion.pti.ast.nodes.CallVarNode;
@@ -50,8 +51,63 @@ public class VisitTree {
 	 * Voeg code toe
 	 */
 	private void addCode(String code) {
-		LOGGER.info("Code: " + code);
+		// TODO: Temp uitgecomment: LOGGER.info("Code: " + code);
+		System.out.println(code);
 		jasminCode.add(code);
+	}
+
+	/**
+	 * Voegt code toe voor een procedure of function.
+	 * 
+	 * @param node
+	 */
+	private void programBlock(AbstractParamNode node) {
+		// TODO
+		String methodeDecl = ".method static " + node.getName() + "(";
+
+		// Parameters
+		for (VariableNode v : node.getParameters()) {
+			if (v.getType().equals(String.class)) {
+				methodeDecl += "Ljava/lang/String;";
+			} else {
+				// Voor integer en boolean
+				methodeDecl += "I";
+			}
+		}
+
+		// Return type
+		if (node instanceof FunctionNode) {
+			if (((FunctionNode) node).getReturnType().equals(String.class)) {
+				methodeDecl += ")Ljava/lang/String;";
+			} else {
+				methodeDecl += ")I";
+			}
+		} else {
+			methodeDecl += ")V";
+		}
+		// Voeg declaratie code toe
+		addCode(methodeDecl);
+		addCode("  .limit stack 16");
+		addCode("  .limit locals " + node.getVariables().size());
+
+		// Bezoek variabelen
+		for (VariableNode v : node.getVariables())
+			v.accept(this);
+
+		// Bezoek code
+		for (AbstractNode n : node.getCode())
+			n.accept(this);
+
+		// Return statement, als we die hebben:
+		if (node instanceof FunctionNode) {
+			if (((FunctionNode) node).getReturnStatement() != null) {
+				((FunctionNode) node).getReturnStatement().accept(this);
+			}
+		}
+
+		// Einde methode
+		addCode("  return");
+		addCode(".end method");
 	}
 
 	/**
@@ -134,36 +190,7 @@ public class VisitTree {
 	}
 
 	public void visit(FunctionNode functionNode) {
-		// TODO
-		String methodeDecl = ".method static " + functionNode.getName() + "(";
-
-		for (VariableNode v : functionNode.getParameters()) {
-			if (v.getType().equals(String.class)) {
-				methodeDecl += "Ljava/lang/String;";
-			} else {
-				// Voor integer en boolean
-				methodeDecl += "I";
-			}
-		}
-
-		methodeDecl += ")I";
-		addCode(methodeDecl);
-
-		addCode("  .limit stack 16");
-		addCode("  .limit locals " + functionNode.getVariables().size());
-
-		// Bezoek variabelen
-		for (VariableNode v : functionNode.getVariables())
-			v.accept(this);
-
-		// Bezoek code
-		for (AbstractNode n : functionNode.getCode())
-			n.accept(this);
-
-		if (functionNode.getReturnStatement() != null)
-			functionNode.getReturnStatement().accept(this);
-
-		addCode(".end method");
+		programBlock(functionNode);
 	}
 
 	public void visit(IfNode ifNode) {
@@ -187,19 +214,17 @@ public class VisitTree {
 		// TODO
 		System.out.println("Print");
 
+		addCode("  getstatic java/lang/System/out Ljava/io/PrintStream;");
+
+		// TODO:
+		addCode("  dload 1");
+
+		addCode("  invokevirtual java/io/PrintStream/println(D)V");
+
 	}
 
 	public void visit(ProcedureNode procedureNode) {
-		// TODO
-		System.out.println("Proc");
-
-		// Bezoek variabelen
-		for (VariableNode v : procedureNode.getVariables())
-			v.accept(this);
-
-		// Bezoek code
-		for (AbstractNode n : procedureNode.getCode())
-			n.accept(this);
+		programBlock(procedureNode);
 
 	}
 
@@ -209,15 +234,6 @@ public class VisitTree {
 		addCode(".class public Test");
 		addCode(".super java/lang/Object");
 		addCode("");
-		addCode(".method public static print(Ljava/lang/String;)V");
-		addCode("  .limit locals 5");
-		addCode("  .limit stack 5");
-		addCode("  aload 0");
-		addCode("   getstatic java/lang/System/out Ljava/io/PrintStream;");
-		addCode("  swap");
-		addCode("  invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V");
-		addCode("  return");
-		addCode(".end method");
 
 		// Bezoek globale vars
 		for (VariableNode v : programNode.getVariables())

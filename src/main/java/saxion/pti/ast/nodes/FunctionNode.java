@@ -5,14 +5,29 @@ import java.util.LinkedList;
 import saxion.pti.ast.VisitTree;
 
 public class FunctionNode  extends AbstractParamNode {
-
-	public FunctionNode(String name, LinkedList<VariableNode> parameters) {
+	private Class<?> returnType;
+	
+	public FunctionNode(String name, Class<?> returnType , LinkedList<VariableNode> parameters) {
 		super(name, parameters);
-		// TODO Auto-generated constructor stub
+		this.setReturnType(returnType);
 	}
 
 	@Override
 	public void accept(VisitTree tree) {
 		tree.visit(this);
+	}
+
+	/**
+	 * @return the returnType
+	 */
+	public Class<?> getReturnType() {
+		return returnType;
+	}
+
+	/**
+	 * @param returnType the returnType to set
+	 */
+	public void setReturnType(Class<?> returnType) {
+		this.returnType = returnType;
 	}
 }

@@ -81,10 +81,10 @@ proc_decl 	::=
 
 
 // Function
-func_decl 	::= var_type IDENTIFIER:id 
+func_decl 	::= var_type:t IDENTIFIER:id 
 				LPAREN param_decl:params RPAREN
 				{: 
-					buildTree.pushNode(new FunctionNode(id, params)); 
+					buildTree.pushNode(buildTree.createFunctionNode(id, t, params)); 
 				:} 
 				LBRACE code_body
 					RETURN expression:expr SEMICOLON 
