@@ -41,7 +41,7 @@ public class Main {
 					
 					result.debugMsg("Max depth of tree: " + result.getMaxDepth());
 					
-					VisitTree treeVisitor = new VisitTree(result);
+					VisitTree treeVisitor = new VisitTree(result, "Test");
 					treeVisitor.start();
 					
 				} catch (Exception e) {

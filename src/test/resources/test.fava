@@ -1,6 +1,9 @@
-int test = 0;
+void main()
+{
+	test();
+}
 
-void main(string grr[])
+void test()
 {
 	print("TEST");
 }
