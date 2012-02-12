@@ -33,7 +33,7 @@ non terminal BuildTree					 program;
 non terminal AbstractNode 				 program_;
 non terminal AbstractNode				 proc_decl, func_decl, var_decl;
 
-non terminal Integer					 var_type;
+non terminal Integer					 var_type, var_array;
 non terminal LinkedList<String> 		 var_names;
 
 non terminal LinkedList<VariableNode> 	 param_decl;
@@ -97,23 +97,23 @@ func_decl 	::= var_type:t IDENTIFIER:id
 
 
 // Parameters
-param_decl	::= var_type:t IDENTIFIER:param
+param_decl	::= var_type:t IDENTIFIER:param var_array:a
 				{:LinkedList<VariableNode> params = new LinkedList<VariableNode>();
-				   params.add(buildTree.createParameter(t, param));
+				   params.add(buildTree.createParameter(t, param, a));
 				   RESULT = params; :}|
-				var_type:t IDENTIFIER:param COMMA param_decl:prms
+				var_type:t IDENTIFIER:param var_array:a COMMA param_decl:prms
 				{:LinkedList<VariableNode> params = new LinkedList<VariableNode>();
-				   params.add(buildTree.createParameter(t, param));
+				   params.add(buildTree.createParameter(t, param, a));
 				   params.addAll(prms);
 				   RESULT = params; :}|
 				{: RESULT = new LinkedList<VariableNode>(); :};
 		
 				
 // Variabele
-var_decl	::= var_type:t var_names:n SEMICOLON				
-				{: buildTree.addVariables(t,n, null); :}|
-				var_type:t var_names:n EQ expr_result:expr SEMICOLON
-				{: buildTree.addVariables(t,n,expr); :};
+var_decl	::= var_type:t var_names:n var_array:a SEMICOLON				
+				{: buildTree.addVariables(t,n, null, a); :}|
+				var_type:t var_names:n var_array:a EQ expr_result:expr SEMICOLON
+				{: buildTree.addVariables(t,n,expr, a); :};
 var_names	::= IDENTIFIER:id 
 				{:LinkedList<String> names = new LinkedList<String>();
 				   names.add(id);
@@ -123,6 +123,9 @@ var_names	::= IDENTIFIER:id
 				   names.add(id);
 				   names.addAll(ids);
 				   RESULT = names; :};
+var_array	::= LSQPAREN STATIC_INT:i RSQPAREN {: RESULT = new Integer(i); :} |
+				LSQPAREN RSQPAREN {: RESULT = new Integer(10); :} |;
+
 var_type 	::= SYM_INT 		{: RESULT = sym.SYM_INT; :} | 
 				SYM_STRING 		{: RESULT = sym.SYM_STRING; :} |
 				SYM_BOOLEAN 	{: RESULT = sym.SYM_BOOLEAN; :};
@@ -238,7 +241,8 @@ expr_term 	::= expr_fact:v expr_oper:o expr_term:r
 expr_oper	::= ASTERICK:a 			{: RESULT = a; :} | 
 				MOD:a 				{: RESULT = a; :} | 
 				FSLASH:a 			{: RESULT = a; :};
-expr_fact	::= IDENTIFIER:id 		{: RESULT = new CallVarNode(id); :}|
+expr_fact	::= IDENTIFIER:id var_array:a		
+									{: RESULT = new CallVarNode(id,a); :}|
 				STATIC_INT:i 		{: RESULT = new StaticValueNode<Integer>(i); :} | 
 				STATIC_STRING:s 	{: RESULT = new StaticValueNode<String>(s);  :} | 
 				TRUE   				{: RESULT = new StaticValueNode<Boolean>(true);  :} | 

@@ -1,7 +1,6 @@
 int test = 0;
 
-int main(string grr)
+void main(string grr[])
 {
 	print("TEST");
-	return 0;
 }

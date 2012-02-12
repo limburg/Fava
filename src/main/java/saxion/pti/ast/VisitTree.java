@@ -63,10 +63,15 @@ public class VisitTree {
 	 */
 	private void programBlock(AbstractParamNode node) {
 		// TODO
-		String methodeDecl = ".method static " + node.getName() + "(";
+		String methodeDecl = ".method public static " + node.getName() + "(";
 
 		// Parameters
 		for (VariableNode v : node.getParameters()) {
+			// Kijk of het om array gaat.
+			if (v.isArray())
+				methodeDecl += "[";
+
+			// Zet de type
 			if (v.getType().equals(String.class)) {
 				methodeDecl += "Ljava/lang/String;";
 			} else {
@@ -77,10 +82,14 @@ public class VisitTree {
 
 		// Return type
 		if (node instanceof FunctionNode) {
+			methodeDecl += ")";
+			if (((FunctionNode) node).getReturnType().isArray())
+				methodeDecl += "[";
+
 			if (((FunctionNode) node).getReturnType().equals(String.class)) {
-				methodeDecl += ")Ljava/lang/String;";
+				methodeDecl += "Ljava/lang/String;";
 			} else {
-				methodeDecl += ")I";
+				methodeDecl += "I";
 			}
 		} else {
 			methodeDecl += ")V";
@@ -88,7 +97,8 @@ public class VisitTree {
 		// Voeg declaratie code toe
 		addCode(methodeDecl);
 		addCode("  .limit stack 16");
-		addCode("  .limit locals " + node.getVariables().size());
+		addCode("  .limit locals " + 1
+				+ (node.getVariables().size() + node.getParameters().size()));
 
 		// Bezoek variabelen
 		for (VariableNode v : node.getVariables())
@@ -212,14 +222,9 @@ public class VisitTree {
 
 	public void visit(PrintNode printNode) {
 		// TODO
-		System.out.println("Print");
-
 		addCode("  getstatic java/lang/System/out Ljava/io/PrintStream;");
-
-		// TODO:
-		addCode("  dload 1");
-
-		addCode("  invokevirtual java/io/PrintStream/println(D)V");
+		printNode.getExpression().accept(this);
+		addCode("  invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V");
 
 	}
 

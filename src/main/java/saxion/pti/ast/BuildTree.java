@@ -24,15 +24,15 @@ public class BuildTree extends AbstractBuildTree {
 	 * @return
 	 */
 	private VariableNode createVariableNode(Integer type, String name,
-			ExpressionNode e) {
+			ExpressionNode e, Integer arraySize) {
 		VariableNode newVariable = null;
 
 		if (type == sym.SYM_INT) {
-			newVariable = new VariableNode(name, Integer.class);
+			newVariable = new VariableNode(name, Integer.class, arraySize);
 		} else if (type == sym.SYM_STRING) {
-			newVariable = new VariableNode(name, String.class);
+			newVariable = new VariableNode(name, String.class, arraySize);
 		} else if (type == sym.SYM_BOOLEAN) {
-			newVariable = new VariableNode(name, Boolean.class);
+			newVariable = new VariableNode(name, Boolean.class, arraySize);
 		} else {
 			new Exception("unknown type for variable " + name);
 		}
@@ -63,13 +63,14 @@ public class BuildTree extends AbstractBuildTree {
 	 * @throws Exception
 	 */
 	public void addVariables(Integer type, LinkedList<String> n,
-			ExpressionNode e) throws Exception {
+			ExpressionNode e, Integer arraySize) throws Exception {
 		// Voeg iedere var afzonderlijk toe:
 		for (String name : n) {
 			debugMsg("Adding variable: " + name);
 			// Check of var al toegevoegd is:
 			if (!getCurrentNode().hasVariable(name)) {
-				getCurrentNode().addVariable(createVariableNode(type, name, e));
+				getCurrentNode().addVariable(
+						createVariableNode(type, name, e, arraySize));
 			} else {
 				throw new Exception("duplicate variable defined: " + name);
 			}
@@ -83,8 +84,9 @@ public class BuildTree extends AbstractBuildTree {
 	 * @param param
 	 * @return
 	 */
-	public VariableNode createParameter(Integer t, String param) {
-		return createVariableNode(t, param, null);
+	public VariableNode createParameter(Integer t, String param,
+			Integer arraySize) {
+		return createVariableNode(t, param, null, arraySize);
 	}
 
 	/**

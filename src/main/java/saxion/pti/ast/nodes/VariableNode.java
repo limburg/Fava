@@ -16,13 +16,16 @@ public class VariableNode extends AbstractNode {
 
 	private String name = "";
 
-	private int arraySize = 0;
+	private Integer arraySize = null;
 
 	private ExpressionNode expression;
 
-	public VariableNode(String name, Class<?> type) {
+	public VariableNode(String name, Class<?> type, Integer arraySize) {
 		this.setName(name);
 		this.type = type;
+
+		if (arraySize != null)
+			this.arraySize = arraySize;
 	}
 
 	/**
@@ -78,7 +81,7 @@ public class VariableNode extends AbstractNode {
 	}
 
 	public boolean isArray() {
-		return arraySize > 0;
+		return arraySize != null;
 	}
 
 	@Override
