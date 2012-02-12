@@ -37,6 +37,7 @@ public class BuildTree extends AbstractBuildTree {
 			new Exception("unknown type for variable " + name);
 		}
 
+		newVariable.setParent(getCurrentNode());
 		newVariable.setExpression(e);
 
 		return newVariable;
@@ -50,6 +51,7 @@ public class BuildTree extends AbstractBuildTree {
 	 *            De regel die toegevoegd wordt.
 	 */
 	public void addCode(AbstractNode line) {
+		line.setParent(getCurrentNode());
 		getCurrentNode().addCode(line);
 	}
 
@@ -93,8 +95,10 @@ public class BuildTree extends AbstractBuildTree {
 	 * Voegt een return statement toe aan een function op de stack.
 	 */
 	public void addReturnStatement(ExpressionNode expr) {
-		if (getCurrentNode() instanceof FunctionNode)
+		if (getCurrentNode() instanceof FunctionNode) {
+			expr.setParent(getCurrentNode());
 			getCurrentNode().setReturnStatement(expr);
+		}
 	}
 
 	/**
@@ -107,15 +111,18 @@ public class BuildTree extends AbstractBuildTree {
 	 */
 	public FunctionNode createFunctionNode(String id, Integer t,
 			LinkedList<VariableNode> params) {
+		FunctionNode f = null;
 		if (t == sym.SYM_INT) {
-			return new FunctionNode(id, Integer.class, params);
+			f = new FunctionNode(id, Integer.class, params);
 		} else if (t == sym.SYM_STRING) {
-			return new FunctionNode(id, String.class, params);
+			f = new FunctionNode(id, String.class, params);
 		} else if (t == sym.SYM_BOOLEAN) {
-			return new FunctionNode(id, Boolean.class, params);
+			f = new FunctionNode(id, Boolean.class, params);
 		} else {
 			new Exception("unknown returntype for function " + id);
 		}
-		return null;
+
+		f.setParent(getCurrentNode());
+		return f;
 	}
 }

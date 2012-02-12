@@ -10,5 +10,6 @@ void test()
 	while(count < 5)
 	{
 		print("TEST");
+		count = count + 1;
 	}
 }

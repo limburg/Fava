@@ -4,11 +4,13 @@ import saxion.pti.ast.AbstractVisitTree;
 
 public class AssignmentNode extends AbstractNode {
 	private String variable;
-	
+
 	private AbstractNode expression;
-	
+
 	public AssignmentNode(String varName, AbstractNode expression) {
 		super();
+		this.variable = varName;
+		this.expression = expression;
 	}
 
 	/**
@@ -19,7 +21,8 @@ public class AssignmentNode extends AbstractNode {
 	}
 
 	/**
-	 * @param variable the variable to set
+	 * @param variable
+	 *            the variable to set
 	 */
 	public void setVariable(String variable) {
 		this.variable = variable;
@@ -33,7 +36,8 @@ public class AssignmentNode extends AbstractNode {
 	}
 
 	/**
-	 * @param expression the expression to set
+	 * @param expression
+	 *            the expression to set
 	 */
 	public void setExpression(AbstractNode expression) {
 		this.expression = expression;

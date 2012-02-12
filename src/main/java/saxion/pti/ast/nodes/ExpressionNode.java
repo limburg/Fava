@@ -1,11 +1,10 @@
 package saxion.pti.ast.nodes;
 
-import java_cup.runtime.Symbol;
 import saxion.pti.ast.AbstractVisitTree;
 
 public class ExpressionNode extends AbstractNode {
 
-	private Symbol type;
+	private Integer type = null;
 
 	private AbstractNode left;
 	
@@ -18,9 +17,10 @@ public class ExpressionNode extends AbstractNode {
 		this.setValue(value);
 	}
 	
-	public ExpressionNode(AbstractNode value, Symbol type, AbstractNode right) {
+	public ExpressionNode(AbstractNode value, Integer type, AbstractNode right) {
 		super();
 		this.setValue(value);
+		
 		this.type = type;
 		this.right = right;
 	}
@@ -28,7 +28,7 @@ public class ExpressionNode extends AbstractNode {
 	/**
 	 * @return the type
 	 */
-	public Symbol getType() {
+	public Integer getType() {
 		return type;
 	}
 
@@ -36,7 +36,7 @@ public class ExpressionNode extends AbstractNode {
 	 * @param type
 	 *            the type to set
 	 */
-	public void setType(Symbol type) {
+	public void setType(Integer type) {
 		this.type = type;
 	}
 

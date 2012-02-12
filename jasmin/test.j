@@ -24,9 +24,18 @@
 
 .method private test()V
   .limit stack 16
-  .limit locals 1
+  .limit locals 2
+  ldc 0
+  istore 0
+ while0:
   getstatic java/lang/System/out Ljava/io/PrintStream;
   ldc "TEST"
   invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+  iload 0
+  ldc 1
+  iadd
+  istore 0
+  goto while0
+ done0:
   return
 .end method

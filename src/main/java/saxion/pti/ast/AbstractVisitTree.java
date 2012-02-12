@@ -35,7 +35,7 @@ public abstract class AbstractVisitTree {
 	private String programName = "";
 
 	// AST
-	private BuildTree tree = null;
+	private AbstractBuildTree tree = null;
 
 	// Code voor Jasmin
 	private LinkedList<String> jasminCode;
@@ -48,7 +48,7 @@ public abstract class AbstractVisitTree {
 	 * @param programName
 	 *            De naam van het programma.
 	 */
-	public AbstractVisitTree(BuildTree buildTree, String programName) {
+	public AbstractVisitTree(AbstractBuildTree buildTree, String programName) {
 		this.tree = buildTree;
 		this.setProgramName(programName);
 		jasminCode = new LinkedList<String>();

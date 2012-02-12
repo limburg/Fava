@@ -1,6 +1,7 @@
 package saxion.pti.ast;
 
 import saxion.pti.ast.nodes.AbstractNode;
+import saxion.pti.ast.nodes.AbstractScopeNode;
 import saxion.pti.ast.nodes.AssignmentNode;
 import saxion.pti.ast.nodes.CallNode;
 import saxion.pti.ast.nodes.CallVarNode;
@@ -13,6 +14,7 @@ import saxion.pti.ast.nodes.ProgramNode;
 import saxion.pti.ast.nodes.StaticValueNode;
 import saxion.pti.ast.nodes.VariableNode;
 import saxion.pti.ast.nodes.WhileNode;
+import saxion.pti.generated.sym;
 
 /**
  * Bezoekt de boom en print jasmin functies uit.
@@ -33,6 +35,7 @@ public class VisitTree extends AbstractVisitTree {
 	 */
 	public void visit(WhileNode whileNode) {
 		// TODO
+		addCode(" while" + whileNode.getStackNumber() + ":");
 
 		// Bezoek statement
 		if (whileNode.getStatement() != null) {
@@ -43,10 +46,8 @@ public class VisitTree extends AbstractVisitTree {
 
 		// Bezoek code
 		executeStackCode(whileNode.getCode());
-
-		if (whileNode.getStatement() != null) {
-
-		}
+		addCode("  goto while" + whileNode.getStackNumber());
+		addCode(" done" + whileNode.getStackNumber() + ":");
 	}
 
 	/**
@@ -56,17 +57,17 @@ public class VisitTree extends AbstractVisitTree {
 		// TODO
 		if (varNode.isGlobal()) {
 			if (varNode.getType().equals(String.class)) {
+				// TODO
 			} else {
+				// TODO
 			}
 		} else {
 			if (varNode.getType().equals(String.class)) {
-				addCode("aload " + varNode.getStackNumber());
 				varNode.getExpression().accept(this);
-				addCode("astore " + varNode.getStackNumber());
+				addCode("  astore " + varNode.getStackNumber());
 			} else {
-				addCode("iload " + varNode.getStackNumber());
 				varNode.getExpression().accept(this);
-				addCode("istore " + varNode.getStackNumber());
+				addCode("  istore " + varNode.getStackNumber());
 			}
 		}
 	}
@@ -78,7 +79,29 @@ public class VisitTree extends AbstractVisitTree {
 
 	public void visit(AssignmentNode assignmentNode) {
 		// TODO
-		System.out.println("Assign");
+		AbstractScopeNode scope = (AbstractScopeNode) assignmentNode
+				.getParent();
+
+		VariableNode varNode = scope.getVariable(assignmentNode.getVariable());
+
+		if (varNode.isGlobal()) {
+			if (varNode.getType().equals(String.class)) {
+				// TODO
+			} else {
+				// TODO
+			}
+		} else {
+			if (varNode.getType().equals(String.class)) {
+				// TODO
+				addCode("  aload " + varNode.getStackNumber());
+				assignmentNode.getExpression().accept(this);
+				addCode("  astore " + varNode.getStackNumber());
+			} else {
+				addCode("  iload " + varNode.getStackNumber());
+				assignmentNode.getExpression().accept(this);
+				addCode("  istore " + varNode.getStackNumber());
+			}
+		}
 
 	}
 
@@ -112,7 +135,7 @@ public class VisitTree extends AbstractVisitTree {
 	}
 
 	public void visit(ExpressionNode expressionNode) {
-		// TODO
+		// TODO String label toevoegen
 		if (expressionNode.getValue() instanceof ExpressionNode) {
 			// De expressie bevat een onderliggende expressie, bezoek deze
 			expressionNode.getValue().accept(this);
@@ -130,6 +153,29 @@ public class VisitTree extends AbstractVisitTree {
 		// Bezoek rechts van de expressie.
 		if (expressionNode.getRight() != null) {
 			expressionNode.getRight().accept(this);
+		}
+
+		// Verwerk symbols
+		if (expressionNode.getType() != null) {
+			switch (expressionNode.getType()) {
+			case sym.PLUS: {
+				addCode("  iadd");
+				break;
+			}
+			case sym.MINUS: {
+				addCode("  isub");
+				break;
+			}
+			case sym.ASTERICK: {
+				addCode("  imul");
+				break;
+			}
+			case sym.BSLASH: {
+				addCode("  idiv");
+				break;
+			}
+			}
+
 		}
 	}
 

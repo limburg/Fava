@@ -43,6 +43,20 @@ public abstract class AbstractScopeNode extends AbstractNode {
 			return false;
 	}
 
+	public VariableNode getVariable(String name) {
+		for (VariableNode var : variables) {
+			if (var.getName().equals(name)) {
+				return var;
+			}
+		}
+
+		if (getParent() != null) {
+			return ((AbstractScopeNode) getParent()).getVariable(name);
+		} else {
+			return null;
+		}
+	}
+
 	public ExpressionNode getReturnStatement() {
 
 		return returnStatement;
