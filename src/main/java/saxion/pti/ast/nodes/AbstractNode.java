@@ -2,7 +2,7 @@ package saxion.pti.ast.nodes;
 
 import java.util.LinkedList;
 
-import saxion.pti.ast.VisitTree;
+import saxion.pti.ast.AbstractVisitTree;
 
 /**
  * Abstract class voor alle nodes.
@@ -24,7 +24,7 @@ public abstract class AbstractNode {
 	/**
 	 * Visitor voor prettyprinting Jasmin code
 	 */
-	public abstract void accept(VisitTree tree);
+	public abstract void accept(AbstractVisitTree abstractVisitTree);
 
 	/**
 	 * @return the childs

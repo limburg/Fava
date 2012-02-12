@@ -5,5 +5,10 @@ void main()
 
 void test()
 {
-	print("TEST");
+	int count = 0;
+	
+	while(count < 5)
+	{
+		print("TEST");
+	}
 }

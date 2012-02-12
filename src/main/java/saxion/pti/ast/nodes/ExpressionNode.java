@@ -1,7 +1,7 @@
 package saxion.pti.ast.nodes;
 
-import saxion.pti.ast.VisitTree;
 import java_cup.runtime.Symbol;
+import saxion.pti.ast.AbstractVisitTree;
 
 public class ExpressionNode extends AbstractNode {
 
@@ -85,7 +85,7 @@ public class ExpressionNode extends AbstractNode {
 	}
 
 	@Override
-	public void accept(VisitTree tree) {
+	public void accept(AbstractVisitTree tree) {
 		tree.visit(this);
 	}
 }

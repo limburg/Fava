@@ -2,7 +2,7 @@ package saxion.pti.ast.nodes;
 
 import java.util.LinkedList;
 
-import saxion.pti.ast.VisitTree;
+import saxion.pti.ast.AbstractVisitTree;
 
 public class ProcedureNode  extends AbstractParamNode{
 
@@ -12,7 +12,7 @@ public class ProcedureNode  extends AbstractParamNode{
 	}
 
 	@Override
-	public void accept(VisitTree tree) {
+	public void accept(AbstractVisitTree tree) {
 		tree.visit(this);
 	}
 }

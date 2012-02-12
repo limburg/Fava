@@ -1,6 +1,6 @@
 package saxion.pti.ast.nodes;
 
-import saxion.pti.ast.VisitTree;
+import saxion.pti.ast.AbstractVisitTree;
 
 /**
  * Bij het aanmaken van een variabele wordt deze -eind- node aangemaakt.
@@ -10,11 +10,13 @@ import saxion.pti.ast.VisitTree;
  * @param <T>
  *            Type variabele (String, int, bool..)
  */
-public class VariableNode extends AbstractNode {
+public class VariableNode extends AbstractNode implements IStackNode {
 	// Generic opslaan
 	private Class<?> type = null;
 
 	private String name = "";
+
+	private Integer stackNumber = null;
 
 	private Integer arraySize = null;
 
@@ -85,7 +87,29 @@ public class VariableNode extends AbstractNode {
 	}
 
 	@Override
-	public void accept(VisitTree tree) {
+	public void accept(AbstractVisitTree tree) {
 		tree.visit(this);
+	}
+
+	/**
+	 * @return the stackNumber
+	 */
+	public Integer getStackNumber() {
+		return stackNumber;
+	}
+
+	/**
+	 * @param stackNumber
+	 *            the stackNumber to set
+	 */
+	public void setStackNumber(Integer stackNumber) {
+		this.stackNumber = stackNumber;
+	}
+
+	/**
+	 * Is dit in een eigen scope of global?
+	 */
+	public boolean isGlobal() {
+		return stackNumber == null;
 	}
 }

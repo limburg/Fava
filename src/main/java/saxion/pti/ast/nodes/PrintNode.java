@@ -1,6 +1,6 @@
 package saxion.pti.ast.nodes;
 
-import saxion.pti.ast.VisitTree;
+import saxion.pti.ast.AbstractVisitTree;
 
 public class PrintNode extends AbstractNode {
 	private ExpressionNode expression;
@@ -25,7 +25,7 @@ public class PrintNode extends AbstractNode {
 	}
 	
 	@Override
-	public void accept(VisitTree tree) {
+	public void accept(AbstractVisitTree tree) {
 		tree.visit(this);
 	}
 }

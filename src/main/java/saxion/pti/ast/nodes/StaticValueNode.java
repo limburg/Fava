@@ -1,6 +1,6 @@
 package saxion.pti.ast.nodes;
 
-import saxion.pti.ast.VisitTree;
+import saxion.pti.ast.AbstractVisitTree;
 
 public class StaticValueNode<T>  extends AbstractNode {
 	private T value;
@@ -27,7 +27,7 @@ public class StaticValueNode<T>  extends AbstractNode {
 	}
 
 	@Override
-	public void accept(VisitTree tree) {
+	public void accept(AbstractVisitTree tree) {
 		tree.visit(this);	
 	}
 }

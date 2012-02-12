@@ -2,7 +2,7 @@ package saxion.pti.ast.nodes;
 
 import java.util.LinkedList;
 
-import saxion.pti.ast.VisitTree;
+import saxion.pti.ast.AbstractVisitTree;
 
 public class CallNode extends AbstractNode {
 	private String name;
@@ -45,7 +45,7 @@ public class CallNode extends AbstractNode {
 	}
 
 	@Override
-	public void accept(VisitTree tree) {
+	public void accept(AbstractVisitTree tree) {
 		tree.visit(this);
 	}
 }
