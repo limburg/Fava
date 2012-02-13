@@ -160,8 +160,10 @@ code_params ::= expression:e
 
 
 // While declaratie
-while_decl	::= WHILE LPAREN expr_test:expr RPAREN
-				{: 	buildTree.pushNode(new WhileNode(expr)); :}
+while_decl	::= WHILE  
+				{:  buildTree.pushNode(new WhileNode()); :}
+				LPAREN expr_test:expr RPAREN
+				{: 	((WhileNode)buildTree.getCurrentNode()).setStatement(expr); :}
 				LBRACE code_body RBRACE else_decl
 				{: 	buildTree.popNode(); :};
 				
@@ -190,54 +192,60 @@ expression	::= expr_test:e 		{:	buildTree.debugMsg("boolean Expression");
 // Vergelijkings expressie
 expr_test	::= expr_result:v EQEQ expr_result:r 
 									{: ExpressionNode e = new ExpressionNode(v,sym.EQEQ,r);
-									   r.setLeft(e);
+									   r.setLeft(e); e.setParent(buildTree.getCurrentNode());
 									   RESULT = e;
 									 :} |
 				expr_result:v NEQ expr_result:r  
 									{: ExpressionNode e = new ExpressionNode(v,sym.NEQ,r);
-									   r.setLeft(e);
+									   r.setLeft(e); e.setParent(buildTree.getCurrentNode());
 									   RESULT = e;
 									 :} |
 				expr_result:v LESS expr_result:r 
 									{: ExpressionNode e = new ExpressionNode(v,sym.LESS,r);
-									   r.setLeft(e);
+									   r.setLeft(e); e.setParent(buildTree.getCurrentNode());
 									   RESULT = e;
 									 :} |
            		expr_result:v LESSEQ expr_result:r 
 									{: ExpressionNode e = new ExpressionNode(v,sym.LESSEQ,r);
-									   r.setLeft(e);
+									   r.setLeft(e); e.setParent(buildTree.getCurrentNode());
 									   RESULT = e;
 									 :} |
            		expr_result:v GREATER expr_result:r 
 									{: ExpressionNode e = new ExpressionNode(v,sym.GREATER,r);
-									   r.setLeft(e);
+									   r.setLeft(e); e.setParent(buildTree.getCurrentNode());
 									   RESULT = e;
 									 :} |
            		expr_result:v GREATEREQ expr_result:r
            							{: ExpressionNode e = new ExpressionNode(v,sym.GREATEREQ,r);
-									   r.setLeft(e);
+									   r.setLeft(e); e.setParent(buildTree.getCurrentNode());
 									   RESULT = e;
 									 :} ;
            		
 // Uitkomst expressie
 expr_result	::= expr_term:v PLUS expr_result:r  
 									{: ExpressionNode e = new ExpressionNode(v,sym.PLUS,r);
-									   r.setLeft(e);
+									   r.setLeft(e); e.setParent(buildTree.getCurrentNode());
 									   RESULT = e;
 									 :} |
 				expr_term:v MINUS expr_result:r 
 									{: ExpressionNode e = new ExpressionNode(v,sym.MINUS,r);
-									   r.setLeft(e);
+									   r.setLeft(e); e.setParent(buildTree.getCurrentNode());
 									   RESULT = e;
 									 :} |
 				expr_term:t 
-									{: RESULT = new ExpressionNode(t); :} ;
+									{: ExpressionNode e = new ExpressionNode(t); 
+									   e.setParent(buildTree.getCurrentNode());
+									   RESULT = e;
+									:} ;
 expr_term 	::= expr_fact:v expr_oper:o expr_term:r 
 									{: ExpressionNode e = new ExpressionNode(v,o,r);
 									   r.setLeft(e);
+									   v.setParent(buildTree.getCurrentNode());
 									   RESULT = e;
 									 :} |
-				expr_fact:f 		{: RESULT = new ExpressionNode(f); :} ;
+				expr_fact:f 		{: f.setParent(buildTree.getCurrentNode());
+									   RESULT = new ExpressionNode(f); 
+									 :} ;
 expr_oper	::= ASTERICK 			{: RESULT = sym.ASTERICK; :} | 
 				MOD 				{: RESULT = sym.MOD; :} | 
 				FSLASH	 			{: RESULT = sym.FSLASH; :};

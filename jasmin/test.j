@@ -28,8 +28,12 @@
   ldc 0
   istore 0
  while0:
+  iload 0
+  ldc 5
+  isub
+  ifgt done0
   getstatic java/lang/System/out Ljava/io/PrintStream;
-  ldc "TEST"
+  ldc 2
   invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
   iload 0
   ldc 1

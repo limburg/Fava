@@ -7,6 +7,7 @@ import saxion.pti.ast.nodes.CallNode;
 import saxion.pti.ast.nodes.CallVarNode;
 import saxion.pti.ast.nodes.ExpressionNode;
 import saxion.pti.ast.nodes.FunctionNode;
+import saxion.pti.ast.nodes.IStackNode;
 import saxion.pti.ast.nodes.IfNode;
 import saxion.pti.ast.nodes.PrintNode;
 import saxion.pti.ast.nodes.ProcedureNode;
@@ -93,11 +94,11 @@ public class VisitTree extends AbstractVisitTree {
 		} else {
 			if (varNode.getType().equals(String.class)) {
 				// TODO
-				addCode("  aload " + varNode.getStackNumber());
+				//addCode("  aload " + varNode.getStackNumber());
 				assignmentNode.getExpression().accept(this);
 				addCode("  astore " + varNode.getStackNumber());
 			} else {
-				addCode("  iload " + varNode.getStackNumber());
+				//addCode("  iload " + varNode.getStackNumber());
 				assignmentNode.getExpression().accept(this);
 				addCode("  istore " + varNode.getStackNumber());
 			}
@@ -129,17 +130,20 @@ public class VisitTree extends AbstractVisitTree {
 	}
 
 	public void visit(CallVarNode callVarNode) {
-		// TODO
-		System.out.println("CallVar");
+		VariableNode vNode = ((AbstractScopeNode) callVarNode.getParent())
+				.getVariable(callVarNode.getName());
 
+		if (vNode.getType().equals(String.class)) {
+			// TODO
+			addCode("  aload " + vNode.getStackNumber());
+		} else {
+			addCode("  iload " + vNode.getStackNumber());
+		}
 	}
 
 	public void visit(ExpressionNode expressionNode) {
 		// TODO String label toevoegen
-		if (expressionNode.getValue() instanceof ExpressionNode) {
-			// De expressie bevat een onderliggende expressie, bezoek deze
-			expressionNode.getValue().accept(this);
-		} else if (expressionNode.getValue() instanceof StaticValueNode<?>) {
+		if (expressionNode.getValue() instanceof StaticValueNode<?>) {
 			// De expressie is een static value, push het op de stack.
 			StaticValueNode<?> statValue = (StaticValueNode<?>) expressionNode
 					.getValue();
@@ -148,6 +152,8 @@ public class VisitTree extends AbstractVisitTree {
 			else
 				addCode("  ldc " + statValue.getValue());
 
+		} else {
+			expressionNode.getValue().accept(this);
 		}
 
 		// Bezoek rechts van de expressie.
@@ -172,6 +178,49 @@ public class VisitTree extends AbstractVisitTree {
 			}
 			case sym.BSLASH: {
 				addCode("  idiv");
+				break;
+			}
+			// Invert de gt/lt IF's, vanwege de subtractr die ik doe:
+			case sym.EQEQ: {
+				addCode("  isub");
+				addCode("  ifeq done"
+						+ ((IStackNode) expressionNode.getParent())
+								.getStackNumber());
+				break;
+			}
+			case sym.NEQ: {
+				addCode("  isub");
+				addCode("  ifne done"
+						+ ((IStackNode) expressionNode.getParent())
+								.getStackNumber());
+				break;
+			}
+			case sym.LESS: {
+				addCode("  isub");
+				addCode("  ifgt done"
+						+ ((IStackNode) expressionNode.getParent())
+								.getStackNumber());
+				break;
+			}
+			case sym.LESSEQ: {
+				addCode("  isub");
+				addCode("  ifge done"
+						+ ((IStackNode) expressionNode.getParent())
+								.getStackNumber());
+				break;
+			}
+			case sym.GREATER: {
+				addCode("  isub");
+				addCode("  iflt done"
+						+ ((IStackNode) expressionNode.getParent())
+								.getStackNumber());
+				break;
+			}
+			case sym.GREATEREQ: {
+				addCode("  isub");
+				addCode("  ifle done"
+						+ ((IStackNode) expressionNode.getParent())
+								.getStackNumber());
 				break;
 			}
 			}

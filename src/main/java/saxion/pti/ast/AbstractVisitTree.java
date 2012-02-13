@@ -40,6 +40,7 @@ public abstract class AbstractVisitTree {
 	// Code voor Jasmin
 	private LinkedList<String> jasminCode;
 
+	
 	/**
 	 * Default Constructo.
 	 * 
@@ -280,5 +281,4 @@ public abstract class AbstractVisitTree {
 	 * @param whileNode
 	 */
 	public abstract void visit(WhileNode whileNode);
-
 }

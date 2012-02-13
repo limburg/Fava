@@ -7,8 +7,13 @@ public class WhileNode extends AbstractParamNode implements IStackNode {
 
 	private Integer stackNumber = null;
 
+	public WhileNode() {
+		super("while", null);
+	}
+	
 	public WhileNode(ExpressionNode statement) {
 		super("while", null);
+		this.statement = statement;
 	}
 
 	/**
