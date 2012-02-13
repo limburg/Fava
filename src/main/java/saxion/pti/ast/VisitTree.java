@@ -176,50 +176,59 @@ public class VisitTree extends AbstractVisitTree {
 			}
 			}
 
-			if (expressionNode.getParent() instanceof WhileNode) {
-				// Invert de IF's, vanwege de subtract die ik doe:
+			if (expressionNode.getParent() instanceof IStackNode) {
+				Integer stackNumber = ((IStackNode) expressionNode.getParent())
+						.getStackNumber();
+				Boolean isWhile = expressionNode.getParent() instanceof WhileNode;
+
 				switch (expressionNode.getType()) {
 
 				case sym.EQEQ: {
 					addCode("  isub");
-					addCode("  ifne done"
-							+ ((IStackNode) expressionNode.getParent())
-									.getStackNumber());
+					if (isWhile)
+						addCode("  ifne done" + stackNumber);
+					else
+						addCode("  ifeq done" + stackNumber);
 					break;
 				}
 				case sym.NEQ: {
 					addCode("  isub");
-					addCode("  ifeq done"
-							+ ((IStackNode) expressionNode.getParent())
-									.getStackNumber());
+					if (isWhile)
+						addCode("  ifeq done" + stackNumber);
+					else
+						addCode("  ifne done" + stackNumber);
 					break;
 				}
 				case sym.LESS: {
 					addCode("  isub");
-					addCode("  ifgt done"
-							+ ((IStackNode) expressionNode.getParent())
-									.getStackNumber());
+					if (isWhile)
+						addCode("  ifgt done" + stackNumber);
+					else
+						addCode("  iflt done" + stackNumber);
 					break;
 				}
 				case sym.LESSEQ: {
 					addCode("  isub");
-					addCode("  ifge done"
-							+ ((IStackNode) expressionNode.getParent())
-									.getStackNumber());
+					if (isWhile)
+						addCode("  ifge done" + stackNumber);
+					else
+						addCode("  ifle done" + stackNumber);
 					break;
 				}
 				case sym.GREATER: {
 					addCode("  isub");
-					addCode("  iflt done"
-							+ ((IStackNode) expressionNode.getParent())
-									.getStackNumber());
+					if (isWhile)
+						addCode("  iflt done" + stackNumber);
+					else
+						addCode("  ifgt done" + stackNumber);
 					break;
 				}
 				case sym.GREATEREQ: {
 					addCode("  isub");
-					addCode("  ifle done"
-							+ ((IStackNode) expressionNode.getParent())
-									.getStackNumber());
+					if (isWhile)
+						addCode("  ifle done" + stackNumber);
+					else
+						addCode("  ifge done" + stackNumber);
 					break;
 				}
 				}
@@ -233,7 +242,7 @@ public class VisitTree extends AbstractVisitTree {
 
 	public void visit(IfNode ifNode) {
 		// TODO
-		System.out.println("If");
+		addCode(" if" + ifNode.getStackNumber() + ":");
 
 		// Bezoek statement
 		if (ifNode.getStatement() != null)
