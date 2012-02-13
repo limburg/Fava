@@ -37,8 +37,8 @@ non terminal Integer					 var_type, var_array;
 non terminal LinkedList<String> 		 var_names;
 
 non terminal LinkedList<VariableNode> 	 param_decl;
-non terminal AbstractNode				 code_body, code_print;
-non terminal LinkedList<ExpressionNode>	 code_params;
+non terminal AbstractNode				 scope_body, code_print, code_block;
+non terminal LinkedList<ExpressionNode>	 code_args;
 non terminal CallNode					 code_proc;
 non terminal AssignmentNode				 code_assign;
 non terminal IfNode				 		 if_decl,else_decl;
@@ -73,7 +73,7 @@ proc_decl 	::=
 				{: 
 					buildTree.pushNode(new ProcedureNode(id, params)); 
 				:} 
-				LBRACE code_body RBRACE
+				LBRACE scope_body RBRACE
 				{:
 					buildTree.popNode();
 				:}
@@ -86,7 +86,7 @@ func_decl 	::= var_type:t IDENTIFIER:id
 				{: 
 					buildTree.pushNode(buildTree.createFunctionNode(id, t, params)); 
 				:} 
-				LBRACE code_body
+				LBRACE scope_body
 					RETURN expression:expr SEMICOLON 
 				RBRACE
 				{:
@@ -132,27 +132,27 @@ var_type 	::= SYM_INT 		{: RESULT = sym.SYM_INT; :} |
 
 
 // Code
-code_body	::= var_decl code_body    | 
-				code_assign code_body |	
-				code_proc code_body   |
-				while_decl code_body  |
-				if_decl code_body     |
-				code_print code_body  |;
+scope_body	::= code_block | var_decl scope_body;
+code_block	::= code_assign code_block |	
+				code_proc code_block   |
+				while_decl code_block  |
+				if_decl code_block     |
+				code_print code_block  |;
 code_print	::= PRINT LPAREN expression:e RPAREN SEMICOLON
 				{: buildTree.debugMsg("Print function called");
 				   buildTree.addCode( new PrintNode(e)); :};
 code_assign	::= IDENTIFIER:id EQ expression:e SEMICOLON 
 				{: buildTree.debugMsg("Assignment to var: " + id ); 
 				   buildTree.addCode( new AssignmentNode(id,e) ); :};
-code_proc	::= IDENTIFIER:id LPAREN code_params:params RPAREN SEMICOLON
+code_proc	::= IDENTIFIER:id LPAREN code_args:params RPAREN SEMICOLON
 				{: buildTree.debugMsg("Call to proc/func: " + id ); 
 				   buildTree.addCode( new CallNode(id,params) ); :};
-code_params ::= expression:e 
+code_args ::= expression:e 
 				{: LinkedList<ExpressionNode> d =  new LinkedList<ExpressionNode>();
 				   d.add(e);
 				   RESULT = d;
 				:} | 
-				expression:e COMMA code_params:prs 
+				expression:e COMMA code_args:prs 
 				{: LinkedList<ExpressionNode> d = new LinkedList<ExpressionNode>();
 				   d.add(e);
 				   d.addAll(prs);
@@ -164,21 +164,21 @@ while_decl	::= WHILE
 				{:  buildTree.pushNode(new WhileNode()); :}
 				LPAREN expr_test:expr RPAREN
 				{: 	((WhileNode)buildTree.getCurrentNode()).setStatement(expr); :}
-				LBRACE code_body RBRACE else_decl
+				LBRACE code_block RBRACE else_decl
 				{: 	buildTree.popNode(); :};
 				
 // If/Else declaratie
 if_decl		::= IF LPAREN expr_test:expr RPAREN
 				{: 	buildTree.pushNode(new IfNode(expr)); :}
-				LBRACE code_body RBRACE 
+				LBRACE code_block RBRACE 
 				{: 	buildTree.popNode(); :} else_decl;
 else_decl	::= ELSE LPAREN expr_test:expr RPAREN 
 				{: 	buildTree.pushNode(new IfNode(expr)); :}
-				LBRACE code_body RBRACE 
+				LBRACE code_block RBRACE 
 				{: 	buildTree.popNode(); :} else_decl |
 				ELSE 
 				{: 	buildTree.pushNode(new IfNode(null)); :}
-				LBRACE code_body RBRACE 
+				LBRACE code_block RBRACE 
 				{: 	buildTree.popNode(); :} | 
 				;
 				

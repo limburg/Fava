@@ -41,8 +41,6 @@ public class VisitTree extends AbstractVisitTree {
 		if (whileNode.getStatement() != null) {
 			whileNode.getStatement().accept(this);
 		}
-		// Bezoek variabelen
-		visitVariableNodes(whileNode.getVariables());
 
 		// Bezoek code
 		executeStackCode(whileNode.getCode());
@@ -248,9 +246,6 @@ public class VisitTree extends AbstractVisitTree {
 		if (ifNode.getStatement() != null)
 			ifNode.getStatement().accept(this);
 
-		// Bezoek variabelen
-		visitVariableNodes(ifNode.getVariables());
-
 		// Bezoek code
 		executeStackCode(ifNode.getCode());
 	}
@@ -284,7 +279,7 @@ public class VisitTree extends AbstractVisitTree {
 		addCode("  return");
 		addCode(".end method");
 		// Bezoek globale vars
-		visitVariableNodes(programNode.getVariables());
+		visitVariableNodes(programNode.getVariables(), 0);
 
 		// Bezoek procs/funcs
 		for (AbstractNode n : programNode.getChilds())

@@ -31,6 +31,9 @@ public abstract class AbstractVisitTree {
 	// Logger
 	private static final Logger LOGGER = Logger.getLogger(VisitTree.class);
 
+	// Label generator
+	private int labelGenerator = 0;
+
 	// Programma naam
 	private String programName = "";
 
@@ -86,13 +89,11 @@ public abstract class AbstractVisitTree {
 	 * @param code
 	 */
 	protected void executeStackCode(LinkedList<AbstractNode> code) {
-		Integer stackCount = 0;
 		for (AbstractNode n : code) {
 			// Als het gaat om een if of while, increase de stack voor de
 			// labelnamen.
 			if (n instanceof IStackNode) {
-				((IStackNode) n).setStackNumber(stackCount);
-				stackCount++;
+				((IStackNode) n).setStackNumber(getNewLabelNumber());
 			}
 			n.accept(this);
 		}
@@ -102,9 +103,10 @@ public abstract class AbstractVisitTree {
 	 * Bezoek de variabelen en geef ze een stacknummer
 	 * 
 	 * @param variables
+	 * @param i
 	 */
-	protected void visitVariableNodes(LinkedList<VariableNode> variables) {
-		Integer stackCount = 0;
+	protected void visitVariableNodes(LinkedList<VariableNode> variables, int i) {
+		Integer stackCount = i;
 		for (VariableNode v : variables) {
 			v.setStackNumber(stackCount);
 			stackCount++;
@@ -167,7 +169,7 @@ public abstract class AbstractVisitTree {
 				+ (1 + node.getVariables().size() + node.getParameters().size()));
 
 		// Bezoek variabelen
-		visitVariableNodes(node.getVariables());
+		visitVariableNodes(node.getVariables(), node.getParameters().size());
 
 		// Bezoek code
 		executeStackCode(node.getCode());
@@ -287,4 +289,13 @@ public abstract class AbstractVisitTree {
 	 * @param whileNode
 	 */
 	public abstract void visit(WhileNode whileNode);
+
+	/**
+	 * @return the labelGenerator
+	 */
+	public int getNewLabelNumber() {
+		labelGenerator++;
+		return labelGenerator;
+	}
+
 }

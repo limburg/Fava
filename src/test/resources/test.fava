@@ -1,25 +1,17 @@
 void main()
 {
-	test();
+	test(4);
 }
 
-void test()
+void test(int num)
 {
 	int count = 0;
 	boolean bla = false;
 	
-	while(count <= 5)
+	while(count <= num)
 	{
 		print("x");
 		count = count + 1;
-	}
-	
-	print(" finished\n");
-	
-	while(bla == false)
-	{
-		print("o");
-		bla = true;
 	}
 	
 	print(" finished\n");

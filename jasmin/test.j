@@ -29,11 +29,11 @@
   istore 0
   ldc 0
   istore 1
- while0:
+ while1:
   iload 0
   ldc 5
   isub
-  ifge done0
+  ifge done1
   getstatic java/lang/System/out Ljava/io/PrintStream;
   ldc "x"
   invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V
@@ -41,24 +41,24 @@
   ldc 1
   iadd
   istore 0
-  goto while0
- done0:
+  goto while1
+ done1:
   getstatic java/lang/System/out Ljava/io/PrintStream;
   ldc " finished
 "
   invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V
- while1:
+ while2:
   iload 1
   ldc 0
   isub
-  ifne done1
+  ifne done2
   getstatic java/lang/System/out Ljava/io/PrintStream;
   ldc "o"
   invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V
   ldc 1
   istore 1
-  goto while1
- done1:
+  goto while2
+ done2:
   getstatic java/lang/System/out Ljava/io/PrintStream;
   ldc " finished
 "
