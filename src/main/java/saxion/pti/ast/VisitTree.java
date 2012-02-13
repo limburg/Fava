@@ -249,12 +249,10 @@ public class VisitTree extends AbstractVisitTree {
 			ifNode.getStatement().accept(this);
 
 		// Bezoek variabelen
-		for (VariableNode v : ifNode.getVariables())
-			v.accept(this);
+		visitVariableNodes(ifNode.getVariables());
 
 		// Bezoek code
-		for (AbstractNode n : ifNode.getCode())
-			n.accept(this);
+		executeStackCode(ifNode.getCode());
 	}
 
 	public void visit(PrintNode printNode) {
