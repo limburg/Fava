@@ -6,10 +6,21 @@ void main()
 void test()
 {
 	int count = 0;
+	boolean bla = false;
 	
-	while(count < 5)
+	while(count <= 5)
 	{
-		print("TEST");
+		print("x");
 		count = count + 1;
 	}
+	
+	print(" finished\n");
+	
+	while(bla == false)
+	{
+		print("o");
+		bla = true;
+	}
+	
+	print(" finished\n");
 }

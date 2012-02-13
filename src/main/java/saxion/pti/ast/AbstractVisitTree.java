@@ -40,7 +40,6 @@ public abstract class AbstractVisitTree {
 	// Code voor Jasmin
 	private LinkedList<String> jasminCode;
 
-	
 	/**
 	 * Default Constructo.
 	 * 
@@ -63,6 +62,13 @@ public abstract class AbstractVisitTree {
 		LOGGER.info("Started translating");
 		tree.getRootNode().accept(this);
 		LOGGER.info("Finished translating");
+	}
+
+	/**
+	 * Geef gegenereerde code terug.
+	 */
+	public LinkedList<String> getCode() {
+		return jasminCode;
 	}
 
 	/**

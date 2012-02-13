@@ -24,22 +24,45 @@
 
 .method private test()V
   .limit stack 16
-  .limit locals 2
+  .limit locals 3
   ldc 0
   istore 0
+  ldc 0
+  istore 1
  while0:
   iload 0
   ldc 5
   isub
-  ifgt done0
+  ifge done0
   getstatic java/lang/System/out Ljava/io/PrintStream;
-  ldc 2
-  invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+  ldc "x"
+  invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V
   iload 0
   ldc 1
   iadd
   istore 0
   goto while0
  done0:
+  getstatic java/lang/System/out Ljava/io/PrintStream;
+  ldc " finished
+"
+  invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V
+ while1:
+  iload 1
+  ldc 0
+  isub
+  ifne done1
+  getstatic java/lang/System/out Ljava/io/PrintStream;
+  ldc "o"
+  invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V
+  ldc 1
+  istore 1
+  goto while1
+ done1:
+  getstatic java/lang/System/out Ljava/io/PrintStream;
+  ldc " finished
+"
+  invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V
   return
 .end method
+

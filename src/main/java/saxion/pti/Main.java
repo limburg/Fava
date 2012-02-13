@@ -1,7 +1,10 @@
 package saxion.pti;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.util.LinkedList;
 
 import org.apache.log4j.Logger;
 
@@ -20,6 +23,20 @@ public class Main {
 	// Logging
 	static final Logger LOGGER = Logger.getLogger(Main.class);
 
+	private static void doWriteJasmin(String file, LinkedList<String> contents) {
+		try {
+			PrintWriter output = new PrintWriter(new File(file));
+
+			for (String line : contents)
+				output.write(line + "\n");
+
+			output.close();
+		} catch (Exception e) {
+			LOGGER.error("Could not write to file: " + file);
+		}
+
+	}
+
 	public static void main(String[] args) {
 		// Check de parameters
 		if (args.length != 1) {
@@ -37,13 +54,15 @@ public class Main {
 			if (finput != null) {
 				parser p = new parser(new Yylex(finput));
 				try {
-					BuildTree result = (BuildTree)p.parse().value;
-					
-					result.debugMsg("Max depth of tree: " + result.getMaxDepth());
-					
+					BuildTree result = (BuildTree) p.parse().value;
+
+					result.debugMsg("Max depth of tree: "
+							+ result.getMaxDepth());
+
 					VisitTree treeVisitor = new VisitTree(result, "Test");
 					treeVisitor.start();
-					
+
+					doWriteJasmin("jasmin/test.j", treeVisitor.getCode());
 				} catch (Exception e) {
 					LOGGER.error("Error while parsing.", e);
 					System.exit(-3);

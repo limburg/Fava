@@ -35,7 +35,6 @@ public class VisitTree extends AbstractVisitTree {
 	 * @param statement
 	 */
 	public void visit(WhileNode whileNode) {
-		// TODO
 		addCode(" while" + whileNode.getStackNumber() + ":");
 
 		// Bezoek statement
@@ -74,8 +73,13 @@ public class VisitTree extends AbstractVisitTree {
 	}
 
 	public void visit(StaticValueNode<?> statValueNode) {
-		// TODO
-		System.out.println("StatVar");
+		if (statValueNode.getValue() instanceof String)
+			addCode("  ldc \"" + statValueNode.getValue() + "\"");
+		else if (statValueNode.getValue() instanceof Boolean)
+			addCode("  ldc "
+					+ (((Boolean) statValueNode.getValue()) == true ? 1 : 0));
+		else
+			addCode("  ldc " + statValueNode.getValue());
 	}
 
 	public void visit(AssignmentNode assignmentNode) {
@@ -94,11 +98,11 @@ public class VisitTree extends AbstractVisitTree {
 		} else {
 			if (varNode.getType().equals(String.class)) {
 				// TODO
-				//addCode("  aload " + varNode.getStackNumber());
+				// addCode("  aload " + varNode.getStackNumber());
 				assignmentNode.getExpression().accept(this);
 				addCode("  astore " + varNode.getStackNumber());
 			} else {
-				//addCode("  iload " + varNode.getStackNumber());
+				// addCode("  iload " + varNode.getStackNumber());
 				assignmentNode.getExpression().accept(this);
 				addCode("  istore " + varNode.getStackNumber());
 			}
@@ -107,12 +111,11 @@ public class VisitTree extends AbstractVisitTree {
 	}
 
 	public void visit(CallNode callNode) {
-		// TODO
-
 		// Push stack
 		addCode("  aload 0");
 
 		// < voer hier values voor de params in >
+		callNode.getParameters();
 		String returnType = "";
 		if (callNode.getParent() instanceof FunctionNode) {
 			FunctionNode parent = (FunctionNode) callNode.getParent();
@@ -142,17 +145,8 @@ public class VisitTree extends AbstractVisitTree {
 	}
 
 	public void visit(ExpressionNode expressionNode) {
-		// TODO String label toevoegen
-		if (expressionNode.getValue() instanceof StaticValueNode<?>) {
-			// De expressie is een static value, push het op de stack.
-			StaticValueNode<?> statValue = (StaticValueNode<?>) expressionNode
-					.getValue();
-			if (statValue.getValue() instanceof String)
-				addCode("  ldc \"" + statValue.getValue() + "\"");
-			else
-				addCode("  ldc " + statValue.getValue());
-
-		} else {
+		// Bezoek de current value van de expressie.
+		if (expressionNode.getValue() != null) {
 			expressionNode.getValue().accept(this);
 		}
 
@@ -180,51 +174,56 @@ public class VisitTree extends AbstractVisitTree {
 				addCode("  idiv");
 				break;
 			}
-			// Invert de gt/lt IF's, vanwege de subtractr die ik doe:
-			case sym.EQEQ: {
-				addCode("  isub");
-				addCode("  ifeq done"
-						+ ((IStackNode) expressionNode.getParent())
-								.getStackNumber());
-				break;
-			}
-			case sym.NEQ: {
-				addCode("  isub");
-				addCode("  ifne done"
-						+ ((IStackNode) expressionNode.getParent())
-								.getStackNumber());
-				break;
-			}
-			case sym.LESS: {
-				addCode("  isub");
-				addCode("  ifgt done"
-						+ ((IStackNode) expressionNode.getParent())
-								.getStackNumber());
-				break;
-			}
-			case sym.LESSEQ: {
-				addCode("  isub");
-				addCode("  ifge done"
-						+ ((IStackNode) expressionNode.getParent())
-								.getStackNumber());
-				break;
-			}
-			case sym.GREATER: {
-				addCode("  isub");
-				addCode("  iflt done"
-						+ ((IStackNode) expressionNode.getParent())
-								.getStackNumber());
-				break;
-			}
-			case sym.GREATEREQ: {
-				addCode("  isub");
-				addCode("  ifle done"
-						+ ((IStackNode) expressionNode.getParent())
-								.getStackNumber());
-				break;
-			}
 			}
 
+			if (expressionNode.getParent() instanceof WhileNode) {
+				// Invert de IF's, vanwege de subtract die ik doe:
+				switch (expressionNode.getType()) {
+
+				case sym.EQEQ: {
+					addCode("  isub");
+					addCode("  ifne done"
+							+ ((IStackNode) expressionNode.getParent())
+									.getStackNumber());
+					break;
+				}
+				case sym.NEQ: {
+					addCode("  isub");
+					addCode("  ifeq done"
+							+ ((IStackNode) expressionNode.getParent())
+									.getStackNumber());
+					break;
+				}
+				case sym.LESS: {
+					addCode("  isub");
+					addCode("  ifgt done"
+							+ ((IStackNode) expressionNode.getParent())
+									.getStackNumber());
+					break;
+				}
+				case sym.LESSEQ: {
+					addCode("  isub");
+					addCode("  ifge done"
+							+ ((IStackNode) expressionNode.getParent())
+									.getStackNumber());
+					break;
+				}
+				case sym.GREATER: {
+					addCode("  isub");
+					addCode("  iflt done"
+							+ ((IStackNode) expressionNode.getParent())
+									.getStackNumber());
+					break;
+				}
+				case sym.GREATEREQ: {
+					addCode("  isub");
+					addCode("  ifle done"
+							+ ((IStackNode) expressionNode.getParent())
+									.getStackNumber());
+					break;
+				}
+				}
+			}
 		}
 	}
 
@@ -250,10 +249,9 @@ public class VisitTree extends AbstractVisitTree {
 	}
 
 	public void visit(PrintNode printNode) {
-		// TODO
 		addCode("  getstatic java/lang/System/out Ljava/io/PrintStream;");
 		printNode.getExpression().accept(this);
-		addCode("  invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V");
+		addCode("  invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V");
 
 	}
 
@@ -262,8 +260,6 @@ public class VisitTree extends AbstractVisitTree {
 	}
 
 	public void visit(ProgramNode programNode) {
-		// TODO
-
 		addCode(".class public " + getProgramName());
 		addCode(".super java/lang/Object");
 		addCode(".method public <init>()V");
