@@ -40,6 +40,8 @@ public class VisitTree extends AbstractVisitTree {
 		// Bezoek statement
 		if (whileNode.getStatement() != null) {
 			whileNode.getStatement().accept(this);
+			addCode("  goto done" + whileNode.getStackNumber());
+			addCode(" start" + whileNode.getStackNumber() + ":");
 		}
 
 		// Bezoek code
@@ -60,12 +62,14 @@ public class VisitTree extends AbstractVisitTree {
 				// TODO
 			}
 		} else {
-			if (varNode.getType().equals(String.class)) {
-				varNode.getExpression().accept(this);
-				addCode("  astore " + varNode.getStackNumber());
-			} else {
-				varNode.getExpression().accept(this);
-				addCode("  istore " + varNode.getStackNumber());
+			if (varNode.getExpression() != null) {
+				if (varNode.getType().equals(String.class)) {
+					varNode.getExpression().accept(this);
+					addCode("  astore " + varNode.getStackNumber());
+				} else {
+					varNode.getExpression().accept(this);
+					addCode("  istore " + varNode.getStackNumber());
+				}
 			}
 		}
 	}
@@ -133,7 +137,6 @@ public class VisitTree extends AbstractVisitTree {
 	public void visit(CallVarNode callVarNode) {
 		VariableNode vNode = ((AbstractScopeNode) callVarNode.getParent())
 				.getVariable(callVarNode.getName());
-
 		if (vNode.getType().equals(String.class)) {
 			// TODO
 			addCode("  aload " + vNode.getStackNumber());
@@ -177,56 +180,43 @@ public class VisitTree extends AbstractVisitTree {
 			if (expressionNode.getParent() instanceof IStackNode) {
 				Integer stackNumber = ((IStackNode) expressionNode.getParent())
 						.getStackNumber();
-				Boolean isWhile = expressionNode.getParent() instanceof WhileNode;
 
 				switch (expressionNode.getType()) {
 
 				case sym.EQEQ: {
 					addCode("  isub");
-					if (isWhile)
-						addCode("  ifne done" + stackNumber);
-					else
-						addCode("  ifeq done" + stackNumber);
+
+					addCode("  ifeq start" + stackNumber);
 					break;
 				}
 				case sym.NEQ: {
 					addCode("  isub");
-					if (isWhile)
-						addCode("  ifeq done" + stackNumber);
-					else
-						addCode("  ifne done" + stackNumber);
+
+					addCode("  ifne start" + stackNumber);
 					break;
 				}
 				case sym.LESS: {
 					addCode("  isub");
-					if (isWhile)
-						addCode("  ifgt done" + stackNumber);
-					else
-						addCode("  iflt done" + stackNumber);
+
+					addCode("  iflt start" + stackNumber);
 					break;
 				}
 				case sym.LESSEQ: {
 					addCode("  isub");
-					if (isWhile)
-						addCode("  ifge done" + stackNumber);
-					else
-						addCode("  ifle done" + stackNumber);
+
+					addCode("  ifle start" + stackNumber);
 					break;
 				}
 				case sym.GREATER: {
 					addCode("  isub");
-					if (isWhile)
-						addCode("  iflt done" + stackNumber);
-					else
-						addCode("  ifgt done" + stackNumber);
+
+					addCode("  ifgt start" + stackNumber);
 					break;
 				}
 				case sym.GREATEREQ: {
 					addCode("  isub");
-					if (isWhile)
-						addCode("  ifle done" + stackNumber);
-					else
-						addCode("  ifge done" + stackNumber);
+
+					addCode("  ifge start" + stackNumber);
 					break;
 				}
 				}

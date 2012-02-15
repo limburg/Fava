@@ -84,6 +84,14 @@ public abstract class AbstractVisitTree {
 	}
 
 	/**
+	 * @return the labelGenerator
+	 */
+	protected int getNewLabelNumber() {
+		labelGenerator++;
+		return labelGenerator;
+	}
+
+	/**
 	 * Functie die code genereert met stack items als while/if's
 	 * 
 	 * @param code
@@ -168,6 +176,9 @@ public abstract class AbstractVisitTree {
 		addCode("  .limit locals "
 				+ (1 + node.getVariables().size() + node.getParameters().size()));
 
+		// Bezoek eventuele parameters.
+		visitVariableNodes(node.getParameters(), 0);
+		
 		// Bezoek variabelen
 		visitVariableNodes(node.getVariables(), node.getParameters().size());
 
@@ -289,13 +300,5 @@ public abstract class AbstractVisitTree {
 	 * @param whileNode
 	 */
 	public abstract void visit(WhileNode whileNode);
-
-	/**
-	 * @return the labelGenerator
-	 */
-	public int getNewLabelNumber() {
-		labelGenerator++;
-		return labelGenerator;
-	}
 
 }

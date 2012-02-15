@@ -10,7 +10,7 @@ public class ProgramNode extends AbstractScopeNode {
 	private LinkedList<FunctionNode> functions = new LinkedList<FunctionNode>();
 	
 	public ProgramNode() {
-		super();
+		super(null);
 	}
 
 	public void addProcedure(ProcedureNode proc) throws Exception

@@ -7,8 +7,8 @@ import saxion.pti.ast.AbstractVisitTree;
 public class FunctionNode  extends AbstractParamNode {
 	private Class<?> returnType;
 	
-	public FunctionNode(String name, Class<?> returnType , LinkedList<VariableNode> parameters) {
-		super(name, parameters);
+	public FunctionNode(AbstractScopeNode parent, String name, Class<?> returnType , LinkedList<VariableNode> parameters) {
+		super(parent, name, parameters);
 		this.setReturnType(returnType);
 	}
 

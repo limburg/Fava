@@ -7,8 +7,8 @@ public class IfNode extends AbstractParamNode implements IStackNode{
 	
 	private Integer stackNumber = null;
 	
-	public IfNode(ExpressionNode statement) {
-		super("if/else", null);
+	public IfNode(AbstractScopeNode parent, ExpressionNode statement) {
+		super(parent, "if/else", null);
 	}
 
 	/**

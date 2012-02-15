@@ -7,8 +7,8 @@ public class AssignmentNode extends AbstractNode {
 
 	private AbstractNode expression;
 
-	public AssignmentNode(String varName, AbstractNode expression) {
-		super();
+	public AssignmentNode(AbstractScopeNode parent, String varName, AbstractNode expression) {
+		super(parent);
 		this.variable = varName;
 		this.expression = expression;
 	}

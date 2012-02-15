@@ -5,9 +5,9 @@ import saxion.pti.ast.AbstractVisitTree;
 public class StaticValueNode<T>  extends AbstractNode {
 	private T value;
 	
-	public StaticValueNode(T value)
+	public StaticValueNode(AbstractScopeNode parent, T value)
 	{
-		super();
+		super(parent);
 		this.setValue(value);
 	}
 	

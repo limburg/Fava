@@ -12,7 +12,8 @@ public abstract class AbstractScopeNode extends AbstractNode {
 	// Return statement (optional)
 	protected ExpressionNode returnStatement;
 
-	public AbstractScopeNode() {
+	public AbstractScopeNode(AbstractScopeNode parent) {
+		super(parent);
 	}
 
 	public LinkedList<AbstractNode> getCode() {
@@ -32,6 +33,7 @@ public abstract class AbstractScopeNode extends AbstractNode {
 	}
 
 	public boolean hasVariable(String name) {
+		// Check variablen
 		for (VariableNode var : variables) {
 			if (var.getName().equalsIgnoreCase(name))
 				return true;

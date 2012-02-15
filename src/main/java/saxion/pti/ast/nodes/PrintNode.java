@@ -5,7 +5,8 @@ import saxion.pti.ast.AbstractVisitTree;
 public class PrintNode extends AbstractNode {
 	private ExpressionNode expression;
 
-	public PrintNode(ExpressionNode expression) {
+	public PrintNode(AbstractScopeNode parent, ExpressionNode expression) {
+		super(parent);
 		this.expression = expression;
 	}
 

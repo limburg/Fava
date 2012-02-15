@@ -3,13 +3,22 @@ package saxion.pti.ast.nodes;
 import saxion.pti.ast.AbstractVisitTree;
 
 public class CallVarNode extends AbstractNode {
+
 	private String name;
 
 	private Integer arrayNum = null;
 
-	public CallVarNode(String name, Integer arrayNum) {
+	public CallVarNode(AbstractScopeNode parent, String name, Integer arrayNum)
+			throws Exception {
+		super(parent);
 		this.setName(name);
 		this.setArrayNum(arrayNum);
+
+		// Variabele bestaat (nog) niet, dus dat mag niet!
+		if (!getParent().hasVariable(name)) {
+			throw new Exception("Variable " + name
+					+ " not yet declared when called.");
+		}
 	}
 
 	/**

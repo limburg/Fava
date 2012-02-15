@@ -4,11 +4,10 @@ import java.util.LinkedList;
 
 import saxion.pti.ast.AbstractVisitTree;
 
-public class ProcedureNode  extends AbstractParamNode{
+public class ProcedureNode extends AbstractParamNode {
 
-	public ProcedureNode(String name, LinkedList<VariableNode> parameters) {
-		super(name, parameters);
-		// TODO Auto-generated constructor stub
+	public ProcedureNode(AbstractScopeNode parent, String name, LinkedList<VariableNode> parameters) {
+		super(parent, name, parameters);
 	}
 
 	@Override

@@ -44,7 +44,7 @@ non terminal AssignmentNode				 code_assign;
 non terminal IfNode				 		 if_decl,else_decl;
 non terminal WhileNode 					 while_decl;
 
-non terminal ExpressionNode				 expression, expr_test, expr_test_, expr_result, expr_term;
+non terminal ExpressionNode				 expression, expr_test, expr_test_, expr_term;
 non terminal AbstractNode				 expr_fact, expr_var, expr_func;
 non terminal Integer					 expr_oper;
 
@@ -71,7 +71,7 @@ proc_decl 	::=
 				VOID IDENTIFIER:id 
 				LPAREN param_decl:params RPAREN
 				{: 
-					buildTree.pushNode(new ProcedureNode(id, params)); 
+					buildTree.pushNode(new ProcedureNode(buildTree.getCurrentNode(),id, params)); 
 				:} 
 				LBRACE scope_body RBRACE
 				{:
@@ -112,7 +112,7 @@ param_decl	::= var_type:t IDENTIFIER:param var_array:a
 // Variabele
 var_decl	::= var_type:t var_names:n var_array:a SEMICOLON				
 				{: buildTree.addVariables(t,n, null, a); :}|
-				var_type:t var_names:n var_array:a EQ expr_result:expr SEMICOLON
+				var_type:t var_names:n var_array:a EQ expr_term:expr SEMICOLON
 				{: buildTree.addVariables(t,n,expr, a); :};
 var_names	::= IDENTIFIER:id 
 				{:LinkedList<String> names = new LinkedList<String>();
@@ -140,13 +140,13 @@ code_block	::= code_assign code_block |
 				code_print code_block  |;
 code_print	::= PRINT LPAREN expression:e RPAREN SEMICOLON
 				{: buildTree.debugMsg("Print function called");
-				   buildTree.addCode( new PrintNode(e)); :};
+				   buildTree.addCode( new PrintNode(buildTree.getCurrentNode(),e)); :};
 code_assign	::= IDENTIFIER:id EQ expression:e SEMICOLON 
 				{: buildTree.debugMsg("Assignment to var: " + id ); 
-				   buildTree.addCode( new AssignmentNode(id,e) ); :};
+				   buildTree.addCode( new AssignmentNode(buildTree.getCurrentNode(),id,e) ); :};
 code_proc	::= IDENTIFIER:id LPAREN code_args:params RPAREN SEMICOLON
 				{: buildTree.debugMsg("Call to proc/func: " + id ); 
-				   buildTree.addCode( new CallNode(id,params) ); :};
+				   buildTree.addCode( new CallNode(buildTree.getCurrentNode(),id,params) ); :};
 code_args ::= expression:e 
 				{: LinkedList<ExpressionNode> d =  new LinkedList<ExpressionNode>();
 				   d.add(e);
@@ -161,7 +161,7 @@ code_args ::= expression:e
 
 // While declaratie
 while_decl	::= WHILE  
-				{:  buildTree.pushNode(new WhileNode()); :}
+				{:  buildTree.pushNode(new WhileNode(buildTree.getCurrentNode())); :}
 				LPAREN expr_test:expr RPAREN
 				{: 	((WhileNode)buildTree.getCurrentNode()).setStatement(expr); :}
 				LBRACE code_block RBRACE else_decl
@@ -169,15 +169,15 @@ while_decl	::= WHILE
 				
 // If/Else declaratie
 if_decl		::= IF LPAREN expr_test:expr RPAREN
-				{: 	buildTree.pushNode(new IfNode(expr)); :}
+				{: 	buildTree.pushNode(new IfNode(buildTree.getCurrentNode(),expr)); :}
 				LBRACE code_block RBRACE 
 				{: 	buildTree.popNode(); :} else_decl;
 else_decl	::= ELSE LPAREN expr_test:expr RPAREN 
-				{: 	buildTree.pushNode(new IfNode(expr)); :}
+				{: 	buildTree.pushNode(new IfNode(buildTree.getCurrentNode(),expr)); :}
 				LBRACE code_block RBRACE 
 				{: 	buildTree.popNode(); :} else_decl |
 				ELSE 
-				{: 	buildTree.pushNode(new IfNode(null)); :}
+				{: 	buildTree.pushNode(new IfNode(buildTree.getCurrentNode(),null)); :}
 				LBRACE code_block RBRACE 
 				{: 	buildTree.popNode(); :} | 
 				;
@@ -185,77 +185,41 @@ else_decl	::= ELSE LPAREN expr_test:expr RPAREN
 // Topdomein van een expressie
 expression	::= expr_test:e 		{:	buildTree.debugMsg("boolean Expression");
 										RESULT = e; :} | 
-				expr_result:e 		{: 	buildTree.debugMsg("result Expression");
+				expr_term:e 		{: 	buildTree.debugMsg("result Expression");
 										RESULT = e; :};
 
 
 // Vergelijkings expressie
-expr_test	::= expr_result:v EQEQ expr_result:r 
-									{: ExpressionNode e = new ExpressionNode(v,sym.EQEQ,r);
-									   r.setLeft(e); e.setParent(buildTree.getCurrentNode());
-									   RESULT = e;
-									 :} |
-				expr_result:v NEQ expr_result:r  
-									{: ExpressionNode e = new ExpressionNode(v,sym.NEQ,r);
-									   r.setLeft(e); e.setParent(buildTree.getCurrentNode());
-									   RESULT = e;
-									 :} |
-				expr_result:v LESS expr_result:r 
-									{: ExpressionNode e = new ExpressionNode(v,sym.LESS,r);
-									   r.setLeft(e); e.setParent(buildTree.getCurrentNode());
-									   RESULT = e;
-									 :} |
-           		expr_result:v LESSEQ expr_result:r 
-									{: ExpressionNode e = new ExpressionNode(v,sym.LESSEQ,r);
-									   r.setLeft(e); e.setParent(buildTree.getCurrentNode());
-									   RESULT = e;
-									 :} |
-           		expr_result:v GREATER expr_result:r 
-									{: ExpressionNode e = new ExpressionNode(v,sym.GREATER,r);
-									   r.setLeft(e); e.setParent(buildTree.getCurrentNode());
-									   RESULT = e;
-									 :} |
-           		expr_result:v GREATEREQ expr_result:r
-           							{: ExpressionNode e = new ExpressionNode(v,sym.GREATEREQ,r);
-									   r.setLeft(e); e.setParent(buildTree.getCurrentNode());
-									   RESULT = e;
-									 :} ;
+expr_test	::= expr_term:v EQEQ expr_term:r 
+									{: RESULT = new ExpressionNode(buildTree.getCurrentNode(),v,sym.EQEQ,r); :} |
+				expr_term:v NEQ expr_term:r  
+									{: RESULT = new ExpressionNode(buildTree.getCurrentNode(),v,sym.NEQ,r);	 :} |
+				expr_term:v LESS expr_term:r 
+									{: RESULT = new ExpressionNode(buildTree.getCurrentNode(),v,sym.LESS,r);	 :} |
+           		expr_term:v LESSEQ expr_term:r 
+									{: RESULT = new ExpressionNode(buildTree.getCurrentNode(),v,sym.LESSEQ,r); :} |
+           		expr_term:v GREATER expr_term:r 
+									{: RESULT = new ExpressionNode(buildTree.getCurrentNode(),v,sym.GREATER,r);:} |
+           		expr_term:v GREATEREQ expr_term:r
+           							{: RESULT = new ExpressionNode(buildTree.getCurrentNode(),v,sym.GREATEREQ,r);:} ;
            		
-// Uitkomst expressie
-expr_result	::= expr_term:v PLUS expr_result:r  
-									{: ExpressionNode e = new ExpressionNode(v,sym.PLUS,r);
-									   r.setLeft(e); e.setParent(buildTree.getCurrentNode());
-									   RESULT = e;
-									 :} |
-				expr_term:v MINUS expr_result:r 
-									{: ExpressionNode e = new ExpressionNode(v,sym.MINUS,r);
-									   r.setLeft(e); e.setParent(buildTree.getCurrentNode());
-									   RESULT = e;
-									 :} |
-				expr_term:t 
-									{: ExpressionNode e = new ExpressionNode(t); 
-									   e.setParent(buildTree.getCurrentNode());
-									   RESULT = e;
-									:} ;
+// Term expressie
 expr_term 	::= expr_fact:v expr_oper:o expr_term:r 
-									{: ExpressionNode e = new ExpressionNode(v,o,r);
-									   r.setLeft(e);
-									   v.setParent(buildTree.getCurrentNode());
-									   RESULT = e;
+									{: RESULT = new ExpressionNode(buildTree.getCurrentNode(),v,o,r);
 									 :} |
-				expr_fact:f 		{: f.setParent(buildTree.getCurrentNode());
-									   RESULT = new ExpressionNode(f); 
+				expr_fact:f 		{: 
+									   RESULT = new ExpressionNode(buildTree.getCurrentNode(),f); 
 									 :} ;
 expr_oper	::= ASTERICK 			{: RESULT = sym.ASTERICK; :} | 
 				MOD 				{: RESULT = sym.MOD; :} | 
-				FSLASH	 			{: RESULT = sym.FSLASH; :};
+				FSLASH	 			{: RESULT = sym.FSLASH; :} |
+				PLUS	 			{: RESULT = sym.PLUS; :} |  
+				MINUS	 			{: RESULT = sym.MINUS; :} ;  
 expr_fact	::= IDENTIFIER:id var_array:a		
-									{: RESULT = new CallVarNode(id,a); :}|
-				STATIC_INT:i 		{: RESULT = new StaticValueNode<Integer>(i); :} | 
-				STATIC_STRING:s 	{: RESULT = new StaticValueNode<String>(s);  :} | 
-				TRUE   				{: RESULT = new StaticValueNode<Boolean>(true);  :} | 
-				FALSE  				{: RESULT = new StaticValueNode<Boolean>(false);  :} | 
+									{: RESULT = new CallVarNode(buildTree.getCurrentNode(),id,a); :}|
+				STATIC_INT:i 		{: RESULT = new StaticValueNode<Integer>(buildTree.getCurrentNode(),i); :} | 
+				STATIC_STRING:s 	{: RESULT = new StaticValueNode<String>(buildTree.getCurrentNode(),s);  :} | 
+				TRUE   				{: RESULT = new StaticValueNode<Boolean>(buildTree.getCurrentNode(),true);  :} | 
+				FALSE  				{: RESULT = new StaticValueNode<Boolean>(buildTree.getCurrentNode(),false);  :} | 
 				code_proc:c 		{: RESULT = c; :};
-
-
 

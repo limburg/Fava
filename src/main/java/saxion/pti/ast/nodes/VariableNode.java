@@ -22,7 +22,9 @@ public class VariableNode extends AbstractNode implements IStackNode {
 
 	private ExpressionNode expression;
 
-	public VariableNode(String name, Class<?> type, Integer arraySize) {
+	public VariableNode(AbstractScopeNode parent, String name, Class<?> type,
+			Integer arraySize) {
+		super(parent);
 		this.setName(name);
 		this.type = type;
 

@@ -13,12 +13,12 @@ import saxion.pti.ast.AbstractVisitTree;
 public abstract class AbstractNode {
 	protected boolean visited = false;
 
-	private AbstractNode parent;
+	private AbstractScopeNode parent;
 
-	private LinkedList<AbstractNode> childs = new LinkedList<AbstractNode>();
+	private LinkedList<AbstractScopeNode> childs = new LinkedList<AbstractScopeNode>();
 
-	public AbstractNode() {
-
+	public AbstractNode(AbstractScopeNode parent) {
+		this.parent = parent;
 	}
 
 	/**
@@ -29,21 +29,21 @@ public abstract class AbstractNode {
 	/**
 	 * @return the childs
 	 */
-	public LinkedList<AbstractNode> getChilds() {
+	public LinkedList<AbstractScopeNode> getChilds() {
 		return childs;
 	}
 
 	/**
 	 * Add childs
 	 */
-	public void addChild(AbstractNode child) {
+	public void addChild(AbstractScopeNode child) {
 		this.childs.add(child);
 	}
 
 	/**
 	 * @return the parent
 	 */
-	public AbstractNode getParent() {
+	public AbstractScopeNode getParent() {
 		return parent;
 	}
 
@@ -51,7 +51,7 @@ public abstract class AbstractNode {
 	 * @param parent
 	 *            the parent to set
 	 */
-	public void setParent(AbstractNode parent) {
+	public void setParent(AbstractScopeNode parent) {
 		this.parent = parent;
 	}
 

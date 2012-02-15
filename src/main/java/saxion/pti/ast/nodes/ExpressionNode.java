@@ -12,17 +12,19 @@ public class ExpressionNode extends AbstractNode {
 
 	private AbstractNode value;
 
-	public ExpressionNode(AbstractNode value) {
-		super();
+	public ExpressionNode(AbstractScopeNode parent, AbstractNode value) {
+		super(parent);
 		this.setValue(value);
 	}
 	
-	public ExpressionNode(AbstractNode value, Integer type, AbstractNode right) {
-		super();
+	public ExpressionNode(AbstractScopeNode parent, AbstractNode value, Integer type, ExpressionNode right) {
+		super(parent);
 		this.setValue(value);
 		
 		this.type = type;
 		this.right = right;
+		
+		right.setLeft(this);
 	}
 
 	/**

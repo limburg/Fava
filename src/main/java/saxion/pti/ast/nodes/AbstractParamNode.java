@@ -12,11 +12,15 @@ public abstract class AbstractParamNode extends AbstractScopeNode {
 	// Func/Proc naam
 	private String name;
 
-	private LinkedList<VariableNode> parameters;
+	private LinkedList<VariableNode> parameters = new LinkedList<VariableNode>();
 
-	public AbstractParamNode(String name, LinkedList<VariableNode> parameters) {
+	public AbstractParamNode(AbstractScopeNode parent, String name,
+			LinkedList<VariableNode> parameters) {
+		super(parent);
 		this.name = name;
-		this.parameters = parameters;
+
+		if (parameters != null)
+			this.parameters = parameters;
 	}
 
 	/**
@@ -32,6 +36,29 @@ public abstract class AbstractParamNode extends AbstractScopeNode {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public boolean hasVariable(String name) {
+		// Check parameters
+		for (VariableNode var : parameters) {
+			if (var.getName().equalsIgnoreCase(name))
+				return true;
+		}
+
+		return super.hasVariable(name);
+	}
+
+	/**
+	 * Get variabele
+	 */
+	public VariableNode getVariable(String name) {
+		// Check parameters
+		for (VariableNode var : parameters) {
+			if (var.getName().equalsIgnoreCase(name))
+				return var;
+		}
+
+		return super.getVariable(name);
 	}
 
 	/**

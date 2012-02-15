@@ -28,11 +28,14 @@ public class BuildTree extends AbstractBuildTree {
 		VariableNode newVariable = null;
 
 		if (type == sym.SYM_INT) {
-			newVariable = new VariableNode(name, Integer.class, arraySize);
+			newVariable = new VariableNode(getCurrentNode(), name,
+					Integer.class, arraySize);
 		} else if (type == sym.SYM_STRING) {
-			newVariable = new VariableNode(name, String.class, arraySize);
+			newVariable = new VariableNode(getCurrentNode(), name,
+					String.class, arraySize);
 		} else if (type == sym.SYM_BOOLEAN) {
-			newVariable = new VariableNode(name, Boolean.class, arraySize);
+			newVariable = new VariableNode(getCurrentNode(), name,
+					Boolean.class, arraySize);
 		} else {
 			new Exception("unknown type for variable " + name);
 		}
@@ -113,11 +116,11 @@ public class BuildTree extends AbstractBuildTree {
 			LinkedList<VariableNode> params) {
 		FunctionNode f = null;
 		if (t == sym.SYM_INT) {
-			f = new FunctionNode(id, Integer.class, params);
+			f = new FunctionNode(getCurrentNode(), id, Integer.class, params);
 		} else if (t == sym.SYM_STRING) {
-			f = new FunctionNode(id, String.class, params);
+			f = new FunctionNode(getCurrentNode(), id, String.class, params);
 		} else if (t == sym.SYM_BOOLEAN) {
-			f = new FunctionNode(id, Boolean.class, params);
+			f = new FunctionNode(getCurrentNode(), id, Boolean.class, params);
 		} else {
 			new Exception("unknown returntype for function " + id);
 		}

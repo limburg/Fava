@@ -17,52 +17,16 @@
 .method public main()V
   .limit stack 16
   .limit locals 1
-  aload 0
-  invokevirtual Test/test()V
+  iload 0
+  ldc 4
+  invokespecial Test/test(I)V
   return
 .end method
 
-.method private test()V
+.method private test(I)V
   .limit stack 16
-  .limit locals 3
-  ldc 0
-  istore 0
-  ldc 0
-  istore 1
- while1:
-  iload 0
-  ldc 5
-  isub
-  ifge done1
-  getstatic java/lang/System/out Ljava/io/PrintStream;
-  ldc "x"
-  invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V
-  iload 0
-  ldc 1
-  iadd
-  istore 0
-  goto while1
- done1:
-  getstatic java/lang/System/out Ljava/io/PrintStream;
-  ldc " finished
-"
-  invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V
- while2:
-  iload 1
-  ldc 0
-  isub
-  ifne done2
-  getstatic java/lang/System/out Ljava/io/PrintStream;
-  ldc "o"
-  invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V
-  ldc 1
-  istore 1
-  goto while2
- done2:
-  getstatic java/lang/System/out Ljava/io/PrintStream;
-  ldc " finished
-"
-  invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V
+  .limit locals 5
+
   return
 .end method
 

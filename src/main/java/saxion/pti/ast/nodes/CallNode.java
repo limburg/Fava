@@ -9,7 +9,9 @@ public class CallNode extends AbstractNode {
 
 	private LinkedList<ExpressionNode> parameters = new LinkedList<ExpressionNode>();
 
-	public CallNode(String name, LinkedList<ExpressionNode> parameters) {
+	public CallNode(AbstractScopeNode parent, String name,
+			LinkedList<ExpressionNode> parameters) throws Exception {
+		super(parent);
 		this.setParameters(parameters);
 		this.setName(name);
 	}
