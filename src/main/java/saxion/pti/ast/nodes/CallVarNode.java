@@ -2,12 +2,30 @@ package saxion.pti.ast.nodes;
 
 import saxion.pti.ast.AbstractVisitTree;
 
+/**
+ * Een aanroep van een variabele in een expressie.
+ * 
+ * @author Joost Limburg
+ * 
+ */
 public class CallVarNode extends AbstractNode {
-
+	// Variabele naam waarvan de waarde opgehaald moet worden.
 	private String name;
 
+	// Array nummer in de variabele.
 	private Integer arrayNum = null;
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param parent
+	 *            De parent
+	 * @param name
+	 *            Naam van de variabele
+	 * @param arrayNum
+	 *            Nummer in de array, als het een array is.
+	 * @throws Exception
+	 */
 	public CallVarNode(AbstractScopeNode parent, String name, Integer arrayNum)
 			throws Exception {
 		super(parent);

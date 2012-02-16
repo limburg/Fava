@@ -4,11 +4,31 @@ import java.util.LinkedList;
 
 import saxion.pti.ast.AbstractVisitTree;
 
+/**
+ * Node welk een functie/procedure aanroep behelst, met bijkomende parameters
+ * van type expressie.
+ * 
+ * @author Joost Limburg
+ * 
+ */
 public class CallNode extends AbstractNode {
+	// Naam van de functie/procedure die aangeroepen wordt.
 	private String name;
 
+	// Meegegeven parameters (van type expressie)
 	private LinkedList<ExpressionNode> parameters = new LinkedList<ExpressionNode>();
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param parent
+	 *            De parent
+	 * @param name
+	 *            De naam van de procedure/functie die aangeroepen wordt.
+	 * @param parameters
+	 *            De parameters die meegegeven zijn.
+	 * @throws Exception
+	 */
 	public CallNode(AbstractScopeNode parent, String name,
 			LinkedList<ExpressionNode> parameters) throws Exception {
 		super(parent);

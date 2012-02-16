@@ -135,7 +135,7 @@ var_type 	::= SYM_INT 		{: RESULT = sym.SYM_INT; :} |
 // Code
 scope_body	::= code_block | var_decl scope_body;
 code_block	::= code_assign code_block |	
-				code_proc code_block   |
+				code_proc SEMICOLON code_block   |
 				while_decl code_block  |
 				if_decl code_block     |
 				code_print code_block  |;
@@ -145,7 +145,7 @@ code_print	::= PRINT LPAREN expression:e RPAREN SEMICOLON
 code_assign	::= IDENTIFIER:id EQ expression:e SEMICOLON 
 				{: buildTree.debugMsg("Assignment to var: " + id ); 
 				   buildTree.addCode( new AssignmentNode(buildTree.getCurrentNode(),id,e) ); :};
-code_proc	::= IDENTIFIER:id LPAREN code_args:params RPAREN SEMICOLON
+code_proc	::= IDENTIFIER:id LPAREN code_args:params RPAREN 
 				{: buildTree.debugMsg("Call to proc/func: " + id ); 
 				   buildTree.addCode( new CallNode(buildTree.getCurrentNode(),id,params) ); :};
 code_args ::= expression:e 

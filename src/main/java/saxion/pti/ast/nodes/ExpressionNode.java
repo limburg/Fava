@@ -2,17 +2,37 @@ package saxion.pti.ast.nodes;
 
 import saxion.pti.ast.AbstractVisitTree;
 
+/**
+ * Expressie
+ * 
+ * @author Joost Limburg
+ * 
+ */
 public class ExpressionNode extends AbstractNode {
+	// Type expressie (zo ver die te bepalen is.
 	private Class<?> type;
 
+	// Operator, zo ver deze expressie dat heeft.
 	private Integer symbol = null;
 
+	// Expressie aan de linkerkant van deze expressie.
 	private AbstractNode left;
 
+	// Expressie aan de rechterkant van deze expressie.
 	private AbstractNode right;
 
+	// Waarde van deze expressie
 	private AbstractNode value;
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param parent
+	 *            De parent
+	 * @param value
+	 *            De waarde van deze expressie
+	 * @throws Exception
+	 */
 	public ExpressionNode(AbstractScopeNode parent, AbstractNode value)
 			throws Exception {
 		super(parent);
@@ -20,6 +40,19 @@ public class ExpressionNode extends AbstractNode {
 		determineType();
 	}
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param parent
+	 *            De parent.
+	 * @param value
+	 *            De waarde van deze expressie
+	 * @param symbol
+	 *            De operator van deze expressie
+	 * @param right
+	 *            De expressie rechts van deze expressie
+	 * @throws Exception
+	 */
 	public ExpressionNode(AbstractScopeNode parent, AbstractNode value,
 			Integer symbol, ExpressionNode right) throws Exception {
 		super(parent);
@@ -50,8 +83,8 @@ public class ExpressionNode extends AbstractNode {
 		} else if (value instanceof ExpressionNode) {
 			type = ((ExpressionNode) value).getType();
 		} else {
-			throw new Exception("invalid type of expression."
-					+ value.getClass());
+			// throw new Exception("invalid type of expression."
+			// + value.getClass());
 		}
 
 		if (right != null && right instanceof ExpressionNode) {

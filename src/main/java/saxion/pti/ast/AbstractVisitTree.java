@@ -79,8 +79,6 @@ public abstract class AbstractVisitTree {
 	 * Voeg code toe
 	 */
 	protected void addCode(String code) {
-		// TODO: Temp uitgecomment: LOGGER.info("Code: " + code);
-		System.out.println(code);
 		jasminCode.add(code);
 	}
 
@@ -190,13 +188,24 @@ public abstract class AbstractVisitTree {
 
 		// Return statement, als we die hebben:
 		if (node instanceof FunctionNode) {
-			if (((FunctionNode) node).getReturnStatement() != null) {
+			FunctionNode fNode = (FunctionNode) node;
+
+			// Return expressie
+			if (fNode.getReturnStatement() != null) {
 				((FunctionNode) node).getReturnStatement().accept(this);
 			}
+
+			// Return type
+			if (fNode.getReturnType().equals(String.class)) {
+				addCode("  areturn");
+			} else {
+				addCode("  ireturn");
+			}
+		} else {
+			addCode("  return");
 		}
 
 		// Einde methode
-		addCode("  return");
 		addCode(".end method");
 		addCode("");
 	}

@@ -23,6 +23,14 @@ public class Main {
 	// Logging
 	static final Logger LOGGER = Logger.getLogger(Main.class);
 
+	/**
+	 * Slaat de inhoud op in een bestand.
+	 * 
+	 * @param file
+	 *            Bestand
+	 * @param contents
+	 *            Inhoud
+	 */
 	private static void doWriteJasmin(String file, LinkedList<String> contents) {
 		try {
 			PrintWriter output = new PrintWriter(new File(file));
@@ -37,6 +45,12 @@ public class Main {
 
 	}
 
+	/**
+	 * Main entry van m'n programma \o/
+	 * 
+	 * @param args
+	 *            argumenten
+	 */
 	public static void main(String[] args) {
 		// Check de parameters
 		if (args.length != 1) {
@@ -54,14 +68,18 @@ public class Main {
 			if (finput != null) {
 				parser p = new parser(new Yylex(finput));
 				try {
+					// Verkrijg de AST uit CUP
 					BuildTree result = (BuildTree) p.parse().value;
 
+					// Even beetje info displayen
 					result.debugMsg("Max depth of tree: "
 							+ result.getMaxDepth());
 
+					// En de boom bezoeken
 					VisitTree treeVisitor = new VisitTree(result, "Test");
 					treeVisitor.start();
 
+					// Om vervolgens op te slaan in de test.j
 					doWriteJasmin("jasmin/test.j", treeVisitor.getCode());
 				} catch (Exception e) {
 					LOGGER.error("Error while parsing.", e);

@@ -2,15 +2,31 @@ package saxion.pti.ast.nodes;
 
 import saxion.pti.ast.AbstractVisitTree;
 
-public class StaticValueNode<T>  extends AbstractNode {
+/**
+ * Statische waarde (nummer,string, etc).
+ * 
+ * @author Joost
+ * 
+ * @param <T>
+ *            De type van de waarde (generic)
+ */
+public class StaticValueNode<T> extends AbstractNode {
+	// De value van de node.
 	private T value;
-	
-	public StaticValueNode(AbstractScopeNode parent, T value)
-	{
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param parent
+	 *            De parent
+	 * @param value
+	 *            De waarde
+	 */
+	public StaticValueNode(AbstractScopeNode parent, T value) {
 		super(parent);
 		this.setValue(value);
 	}
-	
+
 	/**
 	 * @return the value
 	 */
@@ -28,6 +44,6 @@ public class StaticValueNode<T>  extends AbstractNode {
 
 	@Override
 	public void accept(AbstractVisitTree tree) {
-		tree.visit(this);	
+		tree.visit(this);
 	}
 }

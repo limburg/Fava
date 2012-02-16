@@ -11,12 +11,18 @@ import saxion.pti.ast.AbstractVisitTree;
  * 
  */
 public abstract class AbstractNode {
-	protected boolean visited = false;
-
+	// De parent
 	private AbstractScopeNode parent;
 
+	// De kids
 	private LinkedList<AbstractScopeNode> childs = new LinkedList<AbstractScopeNode>();
 
+	/**
+	 * Constructor welke een parent accepteert. Iedere node heeft een parent,
+	 * dus verplicht.
+	 * 
+	 * @param parent
+	 */
 	public AbstractNode(AbstractScopeNode parent) {
 		this.parent = parent;
 	}
@@ -53,12 +59,5 @@ public abstract class AbstractNode {
 	 */
 	public void setParent(AbstractScopeNode parent) {
 		this.parent = parent;
-	}
-
-	/**
-	 * @return the visited
-	 */
-	public boolean isVisited() {
-		return visited;
 	}
 }

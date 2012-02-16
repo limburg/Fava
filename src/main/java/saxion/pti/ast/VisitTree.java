@@ -20,22 +20,24 @@ import saxion.pti.ast.nodes.WhileNode;
 import saxion.pti.generated.sym;
 
 /**
- * Bezoekt de boom en print jasmin functies uit.
+ * Bezoekt de boom en maakt jasmin functies aan.
  * 
  * @author Joost Limburg.
  * 
  */
 public class VisitTree extends AbstractVisitTree {
+	/**
+	 * Constructor.
+	 * 
+	 * @param buildTree
+	 *            De AST.
+	 * @param programName
+	 *            Naam van het programma.
+	 */
 	public VisitTree(BuildTree buildTree, String programName) {
 		super(buildTree, programName);
 	}
 
-	/**
-	 * WhileNode
-	 * 
-	 * @param whileNode
-	 * @param statement
-	 */
 	public void visit(WhileNode whileNode) {
 		addCode(" while" + whileNode.getStackNumber() + ":");
 
@@ -52,9 +54,6 @@ public class VisitTree extends AbstractVisitTree {
 		addCode(" done" + whileNode.getStackNumber() + ":");
 	}
 
-	/**
-	 * VariableNode
-	 */
 	public void visit(VariableNode varNode) {
 		if (varNode.getParent() instanceof ProgramNode) {
 			if (varNode.getType().equals(String.class)) {
@@ -193,8 +192,11 @@ public class VisitTree extends AbstractVisitTree {
 
 	public void visit(ExpressionNode expressionNode) {
 		// Strings appenden
-		boolean appendToString = expressionNode.getSymbol() != null
-				&& expressionNode.getType().equals(String.class);
+		boolean appendToString = false;
+		if (expressionNode.getSymbol() != null
+				&& expressionNode.getType() != null
+				&& expressionNode.getType().equals(String.class))
+			appendToString = true;
 
 		if (expressionNode.getValue() instanceof ExpressionNode)
 			System.out.println("Yep");

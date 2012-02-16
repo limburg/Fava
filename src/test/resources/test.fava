@@ -1,17 +1,33 @@
-string seperator;
 
 void main()
 {
-	seperator = ",";
-	test(4);
+	int N = 7;
+	int i = 1;
+	int result = 0;
+	
+	while(i <= N)
+	{
+		result = fibonacci(i);
+		
+		print(i);
+		print(" : ");
+		print(result);
+		print("\n");
+		
+		i = i + 1;
+	}
 }
 
-void test(int num)
+int fibonacci(int n)
 {
-	if(num > 3)
-	{
-		print("Yes");
-	} 
+	int result = 0;
 	
-	print(" finished\n");
+	if (n <=1)
+	{
+		result = n;
+	} else {
+		result = fibonacci(n-1) + fibonacci(n-2);
+	}
+	
+	return result;
 }

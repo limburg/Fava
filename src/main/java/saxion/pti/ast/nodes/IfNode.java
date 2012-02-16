@@ -2,16 +2,33 @@ package saxion.pti.ast.nodes;
 
 import saxion.pti.ast.AbstractVisitTree;
 
+/**
+ * If constructie
+ * @author Joost Limburg
+ *
+ */
 public class IfNode extends AbstractScopeNode implements IStackNode,
 		IStatementNode {
+	// Expressie die getest moet worden
 	private ExpressionNode statement;
 
+	// Label generator nummer
 	private Integer stackNumber = null;
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param parent De parent.
+	 */
 	public IfNode(AbstractScopeNode parent) {
 		super(parent);
 	}
 
+	/**
+	 * Constructor.
+	 * @param parent
+	 * @param statement
+	 */
 	public IfNode(AbstractScopeNode parent, ExpressionNode statement) {
 		super(parent);
 		this.statement = statement;

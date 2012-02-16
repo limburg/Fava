@@ -11,17 +11,34 @@ import saxion.pti.ast.AbstractVisitTree;
  *            Type variabele (String, int, bool..)
  */
 public class VariableNode extends AbstractNode implements IStackNode {
-	// Generic opslaan
+	// Type van de variabele
 	private Class<?> type = null;
 
-	private String name = "";
+	// Naam van de variabele.
+	private String name;
 
+	// Nummer in de scope van de variabele.
 	private Integer stackNumber = null;
 
+	// Grootte van de array.
 	private Integer arraySize = null;
 
+	// Expressie waarmee de eerste value wordt gezet (alleen bij scope
+	// variabelen).
 	private ExpressionNode expression;
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param parent
+	 *            De parent
+	 * @param name
+	 *            De naam van de variabele
+	 * @param type
+	 *            Het type van de variabele
+	 * @param arraySize
+	 *            Is de variabele een array, zo ja hoe groot.
+	 */
 	public VariableNode(AbstractScopeNode parent, String name, Class<?> type,
 			Integer arraySize) {
 		super(parent);

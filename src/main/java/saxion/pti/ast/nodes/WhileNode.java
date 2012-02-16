@@ -2,15 +2,38 @@ package saxion.pti.ast.nodes;
 
 import saxion.pti.ast.AbstractVisitTree;
 
-public class WhileNode extends AbstractScopeNode implements IStackNode, IStatementNode {
+/**
+ * While constructie.
+ * 
+ * @author Joost Limburg.
+ * 
+ */
+public class WhileNode extends AbstractScopeNode implements IStackNode,
+		IStatementNode {
+	// Expressie waarmee getest wordt
 	private ExpressionNode statement;
 
+	// Uniek labelnummer.
 	private Integer stackNumber = null;
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param parent
+	 *            De parent
+	 */
 	public WhileNode(AbstractScopeNode parent) {
 		super(parent);
 	}
-	
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param parent
+	 *            De parent
+	 * @param statement
+	 *            De expressie waarop getest wordt
+	 */
 	public WhileNode(AbstractScopeNode parent, ExpressionNode statement) {
 		super(parent);
 		this.statement = statement;

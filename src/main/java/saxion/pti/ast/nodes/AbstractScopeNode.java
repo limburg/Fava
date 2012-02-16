@@ -2,6 +2,12 @@ package saxion.pti.ast.nodes;
 
 import java.util.LinkedList;
 
+/**
+ * Abstracte node welke code en variabelen kan bevatten.
+ * 
+ * @author Joost Limburg
+ * 
+ */
 public abstract class AbstractScopeNode extends AbstractNode {
 	// Lokale variabelen (of als het ProgramNode is: globale).
 	protected LinkedList<VariableNode> variables = new LinkedList<VariableNode>();
