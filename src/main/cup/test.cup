@@ -171,7 +171,8 @@ while_decl	::= WHILE
 if_decl		::= IF LPAREN expr_test:expr RPAREN
 				{: 	buildTree.pushNode(new IfNode(buildTree.getCurrentNode(),expr)); :}
 				LBRACE code_block RBRACE 
-				{: 	buildTree.popNode(); :} else_decl;
+				else_decl
+				{: 	buildTree.popNode(); :};
 else_decl	::= ELSE LPAREN expr_test:expr RPAREN 
 				{: 	buildTree.pushNode(new IfNode(buildTree.getCurrentNode(),expr)); :}
 				LBRACE code_block RBRACE 

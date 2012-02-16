@@ -5,12 +5,13 @@ void main()
 
 void test(int num)
 {
+	string seperator = ",";
 	int count = 0;
 	
 	while(count <= num)
 	{
 		print(1 + count * 3);
-		print(",");
+		print(seperator + " hmm" * " daa ");
 		count = count + 1;
 	}
 	

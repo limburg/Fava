@@ -175,18 +175,32 @@ public class VisitTree extends AbstractVisitTree {
 	}
 
 	public void visit(ExpressionNode expressionNode) {
+		// Strings appenden
+		boolean appendToString = expressionNode.getSymbol() != null
+				&& expressionNode.getType().equals(String.class);
+
+		if (appendToString) {
+			addCode("  new java/lang/StringBuffer");
+			addCode("  dup");
+			addCode("  invokespecial java/lang/StringBuffer/<init>()V");
+		}
+
 		// Bezoek de current value van de expressie.
 		if (expressionNode.getValue() != null) {
 			expressionNode.getValue().accept(this);
 		}
 
+		// Voor strings, eerst appenden:
+		if (appendToString) {
+			addCode("  invokevirtual java/lang/StringBuffer/append(Ljava/lang/String;)Ljava/lang/StringBuffer;");
+		}
 		// Bezoek rechts van de expressie.
 		if (expressionNode.getRight() != null) {
 			expressionNode.getRight().accept(this);
 		}
 
 		// Verwerk symbols
-		if (expressionNode.getSymbol() != null) {
+		if (expressionNode.getSymbol() != null && !appendToString) {
 			switch (expressionNode.getSymbol()) {
 			case sym.PLUS: {
 				addCode("  iadd");
@@ -239,6 +253,12 @@ public class VisitTree extends AbstractVisitTree {
 				}
 			}
 		}
+
+		// Finalize de string
+		if (appendToString) {
+			addCode("  invokevirtual java/lang/StringBuffer/append(Ljava/lang/String;)Ljava/lang/StringBuffer;");
+			addCode("  invokevirtual java/lang/StringBuffer/toString()Ljava/lang/String;");
+		}
 	}
 
 	public void visit(FunctionNode functionNode) {
@@ -262,12 +282,11 @@ public class VisitTree extends AbstractVisitTree {
 		Class<?> type = determineExpressionType(printNode.getExpression());
 		printNode.getExpression().accept(this);
 		String inputType = "I";
-		
-		if (type != null && type.equals(String.class))
-		{
+
+		if (type != null && type.equals(String.class)) {
 			inputType = "Ljava/lang/String;";
-		} 
-		
+		}
+
 		addCode("  invokevirtual java/io/PrintStream/print(" + inputType + ")V");
 
 	}
