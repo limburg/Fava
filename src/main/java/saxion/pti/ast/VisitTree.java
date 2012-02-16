@@ -1,6 +1,7 @@
 package saxion.pti.ast;
 
 import saxion.pti.ast.nodes.AbstractNode;
+import saxion.pti.ast.nodes.AbstractParamNode;
 import saxion.pti.ast.nodes.AbstractScopeNode;
 import saxion.pti.ast.nodes.AssignmentNode;
 import saxion.pti.ast.nodes.CallNode;
@@ -114,13 +115,35 @@ public class VisitTree extends AbstractVisitTree {
 
 	public void visit(CallNode callNode) {
 		// Push stack
-		addCode("  aload 0");
+		// addCode("  aload 0");
 
 		// < voer hier values voor de params in >
-		callNode.getParameters();
+		String params = "";
+		boolean comma = false;
+		AbstractParamNode paramNode = tree.getRootNode().getProcOrFunc(
+				callNode.getName());
+
+		if (paramNode == null)
+			throw new RuntimeException("undeclared function/procedure found: "
+					+ callNode.getName());
+
+		for (VariableNode v : paramNode.getParameters()) {
+			if (!comma) {
+				comma = true;
+			} else {
+				params += ",";
+			}
+
+			if (v.getType().equals("String"))
+				params += "Ljava/lang/String;";
+			else
+				params += "I";
+		}
+
+		// determineer teruggeef type
 		String returnType = "";
-		if (callNode.getParent() instanceof FunctionNode) {
-			FunctionNode parent = (FunctionNode) callNode.getParent();
+		if (paramNode instanceof FunctionNode) {
+			FunctionNode parent = (FunctionNode) paramNode;
 
 			if (parent.getReturnType().equals("String"))
 				returnType = "Ljava/lang/String;";
@@ -129,8 +152,14 @@ public class VisitTree extends AbstractVisitTree {
 		} else {
 			returnType = "V";
 		}
+
+		// Bezoek parameters, mits aanwezig.
+		for (ExpressionNode e : callNode.getParameters())
+			e.accept(this);
+
+		// Voeg de invoke code toe
 		addCode("  invokevirtual " + getProgramName() + "/"
-				+ callNode.getName() + "()" + returnType);
+				+ callNode.getName() + "(" + params + ")" + returnType);
 
 	}
 
@@ -157,8 +186,8 @@ public class VisitTree extends AbstractVisitTree {
 		}
 
 		// Verwerk symbols
-		if (expressionNode.getType() != null) {
-			switch (expressionNode.getType()) {
+		if (expressionNode.getSymbol() != null) {
+			switch (expressionNode.getSymbol()) {
 			case sym.PLUS: {
 				addCode("  iadd");
 				break;
@@ -181,42 +210,30 @@ public class VisitTree extends AbstractVisitTree {
 				Integer stackNumber = ((IStackNode) expressionNode.getParent())
 						.getStackNumber();
 
-				switch (expressionNode.getType()) {
+				switch (expressionNode.getSymbol()) {
 
 				case sym.EQEQ: {
-					addCode("  isub");
-
-					addCode("  ifeq start" + stackNumber);
+					addCode("  if_icmpeq start" + stackNumber);
 					break;
 				}
 				case sym.NEQ: {
-					addCode("  isub");
-
-					addCode("  ifne start" + stackNumber);
+					addCode("  if_icmpne start" + stackNumber);
 					break;
 				}
 				case sym.LESS: {
-					addCode("  isub");
-
-					addCode("  iflt start" + stackNumber);
+					addCode("  if_icmplt start" + stackNumber);
 					break;
 				}
 				case sym.LESSEQ: {
-					addCode("  isub");
-
-					addCode("  ifle start" + stackNumber);
+					addCode("  if_icmple start" + stackNumber);
 					break;
 				}
 				case sym.GREATER: {
-					addCode("  isub");
-
-					addCode("  ifgt start" + stackNumber);
+					addCode("  if_icmpgt start" + stackNumber);
 					break;
 				}
 				case sym.GREATEREQ: {
-					addCode("  isub");
-
-					addCode("  ifge start" + stackNumber);
+					addCode("  if_icmpge start" + stackNumber);
 					break;
 				}
 				}
@@ -242,8 +259,16 @@ public class VisitTree extends AbstractVisitTree {
 
 	public void visit(PrintNode printNode) {
 		addCode("  getstatic java/lang/System/out Ljava/io/PrintStream;");
+		Class<?> type = determineExpressionType(printNode.getExpression());
 		printNode.getExpression().accept(this);
-		addCode("  invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V");
+		String inputType = "I";
+		
+		if (type != null && type.equals(String.class))
+		{
+			inputType = "Ljava/lang/String;";
+		} 
+		
+		addCode("  invokevirtual java/io/PrintStream/print(" + inputType + ")V");
 
 	}
 

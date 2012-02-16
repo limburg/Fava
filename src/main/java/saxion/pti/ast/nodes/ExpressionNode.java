@@ -3,43 +3,82 @@ package saxion.pti.ast.nodes;
 import saxion.pti.ast.AbstractVisitTree;
 
 public class ExpressionNode extends AbstractNode {
+	private Class<?> type;
 
-	private Integer type = null;
+	private Integer symbol = null;
 
 	private AbstractNode left;
-	
+
 	private AbstractNode right;
 
 	private AbstractNode value;
 
-	public ExpressionNode(AbstractScopeNode parent, AbstractNode value) {
+	public ExpressionNode(AbstractScopeNode parent, AbstractNode value)
+			throws Exception {
 		super(parent);
 		this.setValue(value);
+		determineType();
 	}
-	
-	public ExpressionNode(AbstractScopeNode parent, AbstractNode value, Integer type, ExpressionNode right) {
+
+	public ExpressionNode(AbstractScopeNode parent, AbstractNode value,
+			Integer symbol, ExpressionNode right) throws Exception {
 		super(parent);
 		this.setValue(value);
-		
-		this.type = type;
+
+		this.symbol = symbol;
 		this.right = right;
-		
-		right.setLeft(this);
+
+		if (right != null)
+			right.setLeft(this);
+		determineType();
 	}
 
 	/**
-	 * @return the type
+	 * Determineer het type (int, str, bool etc) van de expressie
+	 * 
+	 * @throws Exception
 	 */
-	public Integer getType() {
-		return type;
+	private void determineType() throws Exception {
+		// Determineer type van expressie.
+		if (value instanceof StaticValueNode) {
+			type = ((StaticValueNode<?>) value).getValue().getClass();
+		} else if (value instanceof CallVarNode) {
+			type = getParent().getVariable(((CallVarNode) value).getName())
+					.getType();
+		} else if (value instanceof CallNode) {
+			// Moet worden bepaald in de visitor.
+		} else if (value instanceof ExpressionNode) {
+			type = ((ExpressionNode) value).getType();
+		} else {
+			throw new Exception("invalid type of expression."
+					+ value.getClass());
+		}
+
+		if (right != null && right instanceof ExpressionNode) {
+			if (type != null
+					&& !type.equals(((ExpressionNode) right).getType())) {
+				throw new Exception(
+						"incompatible assignment types in one expression("
+								+ type + ", "
+								+ ((ExpressionNode) right).getType() + ")");
+			}
+
+		}
+	}
+
+	/**
+	 * @return the symbol
+	 */
+	public Integer getSymbol() {
+		return symbol;
 	}
 
 	/**
 	 * @param type
-	 *            the type to set
+	 *            the symbol to set
 	 */
-	public void setType(Integer type) {
-		this.type = type;
+	public void setSymbol(Integer symbol) {
+		this.symbol = symbol;
 	}
 
 	/**
@@ -80,7 +119,8 @@ public class ExpressionNode extends AbstractNode {
 	}
 
 	/**
-	 * @param left the left to set
+	 * @param left
+	 *            the left to set
 	 */
 	public void setLeft(AbstractNode left) {
 		this.left = left;
@@ -89,5 +129,20 @@ public class ExpressionNode extends AbstractNode {
 	@Override
 	public void accept(AbstractVisitTree tree) {
 		tree.visit(this);
+	}
+
+	/**
+	 * @return the type
+	 */
+	public Class<?> getType() {
+		return type;
+	}
+
+	/**
+	 * @param type
+	 *            the type to set
+	 */
+	public void setType(Class<?> type) {
+		this.type = type;
 	}
 }

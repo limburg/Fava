@@ -38,7 +38,7 @@ public abstract class AbstractVisitTree {
 	private String programName = "";
 
 	// AST
-	private AbstractBuildTree tree = null;
+	protected AbstractBuildTree tree = null;
 
 	// Code voor Jasmin
 	private LinkedList<String> jasminCode;
@@ -175,12 +175,12 @@ public abstract class AbstractVisitTree {
 		addCode("  .limit stack 16");
 		addCode("  .limit locals "
 				+ (1 + node.getVariables().size() + node.getParameters().size()));
-
+		addCode("  aload 0");
 		// Bezoek eventuele parameters.
-		visitVariableNodes(node.getParameters(), 0);
-		
+		visitVariableNodes(node.getParameters(), 1);
+
 		// Bezoek variabelen
-		visitVariableNodes(node.getVariables(), node.getParameters().size());
+		visitVariableNodes(node.getVariables(), node.getParameters().size() + 1);
 
 		// Bezoek code
 		executeStackCode(node.getCode());
@@ -196,6 +196,34 @@ public abstract class AbstractVisitTree {
 		addCode("  return");
 		addCode(".end method");
 		addCode("");
+	}
+
+	/**
+	 * Bepaal de returnType van een gehele expressie.
+	 */
+	protected Class<?> determineExpressionType(ExpressionNode expression) {
+		Class<?> type = expression.getType();
+		AbstractNode next = expression;
+
+		while (type == null && next != null) {
+			if (next instanceof ExpressionNode) {
+				ExpressionNode expr = (ExpressionNode) next;
+
+				if (expr.getLeft() != null) {
+					type = expr.getType();
+					next = expr;
+				} else if (expr.getValue() instanceof ExpressionNode) {
+					type = ((ExpressionNode) expr.getValue()).getType();
+					next = ((ExpressionNode) expr.getValue());
+				} else {
+					next = null;
+				}
+			} else {
+				next = null;
+			}
+		}
+
+		return type;
 	}
 
 	/**

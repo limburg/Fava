@@ -2,13 +2,14 @@ package saxion.pti.ast.nodes;
 
 import saxion.pti.ast.AbstractVisitTree;
 
-public class IfNode extends AbstractParamNode implements IStackNode{
+public class IfNode extends AbstractScopeNode implements IStackNode, IStatementNode{
 	private ExpressionNode statement;
 	
 	private Integer stackNumber = null;
 	
 	public IfNode(AbstractScopeNode parent, ExpressionNode statement) {
-		super(parent, "if/else", null);
+		super(parent);
+		this.statement = statement;
 	}
 
 	/**

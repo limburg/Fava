@@ -6,11 +6,11 @@ void main()
 void test(int num)
 {
 	int count = 0;
-	boolean bla = false;
 	
 	while(count <= num)
 	{
-		print("x");
+		print(1 + count * 3);
+		print(",");
 		count = count + 1;
 	}
 	

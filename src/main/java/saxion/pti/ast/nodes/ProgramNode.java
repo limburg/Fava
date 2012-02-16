@@ -1,47 +1,31 @@
 package saxion.pti.ast.nodes;
 
-import java.util.LinkedList;
-
 import saxion.pti.ast.AbstractVisitTree;
 
 public class ProgramNode extends AbstractScopeNode {
-	private LinkedList<ProcedureNode> procedures = new LinkedList<ProcedureNode>();
-	
-	private LinkedList<FunctionNode> functions = new LinkedList<FunctionNode>();
-	
 	public ProgramNode() {
 		super(null);
 	}
 
-	public void addProcedure(ProcedureNode proc) throws Exception
-	{
-		if (!hasProcOrFunc(proc.getName()))
-			procedures.add(proc);
-		else
-			throw new Exception("procedure "+ proc.getName() + " already defined by a procedure/function.");
-	}
-	
-	public void addFunction(FunctionNode func) throws Exception
-	{
-		if (!hasProcOrFunc(func.getName()))
-			functions.add(func);
-		else
-			throw new Exception("function "+ func.getName() + " already defined by a procedure/function.");
-	}
-	
-	private boolean hasProcOrFunc(String name) {
-		for (ProcedureNode proc : procedures)
-		{
-			if (proc.getName().equalsIgnoreCase(name))
-				return true;
+	public AbstractParamNode getProcOrFunc(String name) {
+		for (AbstractNode procFunc : getChilds()) {
+			if (procFunc instanceof AbstractParamNode
+					&& ((AbstractParamNode) procFunc).getName().equals(name)) {
+				return (AbstractParamNode) procFunc;
+			}
+
 		}
 
-		return false;
+		return null;
+	}
+
+	public boolean hasProcOrFunc(String name) {
+		return getProcOrFunc(name) != null;
 	}
 
 	@Override
 	public void accept(AbstractVisitTree abstractVisitTree) {
 		abstractVisitTree.visit(this);
 	}
-	
+
 }

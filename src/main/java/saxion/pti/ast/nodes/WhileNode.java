@@ -2,17 +2,17 @@ package saxion.pti.ast.nodes;
 
 import saxion.pti.ast.AbstractVisitTree;
 
-public class WhileNode extends AbstractParamNode implements IStackNode {
+public class WhileNode extends AbstractScopeNode implements IStackNode, IStatementNode {
 	private ExpressionNode statement;
 
 	private Integer stackNumber = null;
 
 	public WhileNode(AbstractScopeNode parent) {
-		super(parent, "while", null);
+		super(parent);
 	}
 	
 	public WhileNode(AbstractScopeNode parent, ExpressionNode statement) {
-		super(parent, "while", null);
+		super(parent);
 		this.statement = statement;
 	}
 

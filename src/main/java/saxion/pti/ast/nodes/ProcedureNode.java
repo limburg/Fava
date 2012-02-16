@@ -7,7 +7,7 @@ import saxion.pti.ast.AbstractVisitTree;
 public class ProcedureNode extends AbstractParamNode {
 
 	public ProcedureNode(AbstractScopeNode parent, String name, LinkedList<VariableNode> parameters) {
-		super(parent, name, parameters);
+		super(parent, name, null, parameters);
 	}
 
 	@Override
