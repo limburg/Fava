@@ -1,19 +1,17 @@
+string seperator;
+
 void main()
 {
+	seperator = ",";
 	test(4);
 }
 
 void test(int num)
 {
-	string seperator = ",";
-	int count = 0;
-	
-	while(count <= num)
+	if(num > 3)
 	{
-		print(1 + count * 3);
-		print(seperator + " hmm" * " daa ");
-		count = count + 1;
-	}
+		print("Yes");
+	} 
 	
 	print(" finished\n");
 }

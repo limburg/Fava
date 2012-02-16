@@ -13,17 +13,21 @@ public abstract class AbstractParamNode extends AbstractScopeNode {
 	private String name;
 
 	private Class<?> returnType;
-	
+
 	private LinkedList<VariableNode> parameters = new LinkedList<VariableNode>();
 
 	public AbstractParamNode(AbstractScopeNode parent, String name,
-			 Class<?> returnType, LinkedList<VariableNode> parameters) {
+			Class<?> returnType, LinkedList<VariableNode> parameters) {
 		super(parent);
 		this.name = name;
 		this.returnType = returnType;
-		
-		if (parameters != null)
+
+		if (parameters != null) {
 			this.parameters = parameters;
+
+			for (VariableNode node : parameters)
+				node.setParent(this);
+		}
 	}
 
 	/**
@@ -87,7 +91,8 @@ public abstract class AbstractParamNode extends AbstractScopeNode {
 	}
 
 	/**
-	 * @param returnType the returnType to set
+	 * @param returnType
+	 *            the returnType to set
 	 */
 	public void setReturnType(Class<?> returnType) {
 		this.returnType = returnType;

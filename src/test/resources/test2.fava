@@ -1,26 +1,22 @@
-boolean intro = true;
+string seperator;
 
 void main()
 {
-	countTo(5);
-	intro = false;
+	seperator = ",";
+	test(4);
 }
 
-int countTo(int num)
+void test(int num)
 {
-	int counter = 0;
+	int count = 0;
 	
-	while(counter < num)
+	while(count <= num)
 	{
-		counter = counter + 1;
+		print(1 + count);
+		print(seperator);
 		
-		if (count > 5)
-		{
-			print("x");
-		} else {
-			print("-");
-		}
+		count = count + 1;
 	}
 	
-	return counter;
+	print(" finished\n");
 }

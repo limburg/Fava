@@ -42,11 +42,6 @@ public class WhileNode extends AbstractScopeNode implements IStackNode, IStateme
 	}
 
 	@Override
-	public boolean isGlobal() {
-		return stackNumber == null;
-	}
-
-	@Override
 	public void setStackNumber(Integer stackNumber) {
 		this.stackNumber = stackNumber;
 	}

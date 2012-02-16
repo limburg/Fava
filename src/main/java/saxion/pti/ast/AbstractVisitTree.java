@@ -9,6 +9,7 @@ import saxion.pti.ast.nodes.AbstractParamNode;
 import saxion.pti.ast.nodes.AssignmentNode;
 import saxion.pti.ast.nodes.CallNode;
 import saxion.pti.ast.nodes.CallVarNode;
+import saxion.pti.ast.nodes.ElseNode;
 import saxion.pti.ast.nodes.ExpressionNode;
 import saxion.pti.ast.nodes.FunctionNode;
 import saxion.pti.ast.nodes.IStackNode;
@@ -98,12 +99,14 @@ public abstract class AbstractVisitTree {
 	 */
 	protected void executeStackCode(LinkedList<AbstractNode> code) {
 		for (AbstractNode n : code) {
-			// Als het gaat om een if of while, increase de stack voor de
-			// labelnamen.
-			if (n instanceof IStackNode) {
-				((IStackNode) n).setStackNumber(getNewLabelNumber());
+			if (!(n instanceof ElseNode)) {
+				// Als het gaat om een if of while, increase de stack voor de
+				// labelnamen.
+				if (n instanceof IStackNode) {
+					((IStackNode) n).setStackNumber(getNewLabelNumber());
+				}
+				n.accept(this);
 			}
-			n.accept(this);
 		}
 	}
 
@@ -175,7 +178,7 @@ public abstract class AbstractVisitTree {
 		addCode("  .limit stack 16");
 		addCode("  .limit locals "
 				+ (1 + node.getVariables().size() + node.getParameters().size()));
-		addCode("  aload 0");
+
 		// Bezoek eventuele parameters.
 		visitVariableNodes(node.getParameters(), 1);
 

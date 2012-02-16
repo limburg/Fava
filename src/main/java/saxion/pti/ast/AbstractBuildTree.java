@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 
 import saxion.pti.ast.nodes.AbstractParamNode;
 import saxion.pti.ast.nodes.AbstractScopeNode;
+import saxion.pti.ast.nodes.ElseNode;
 import saxion.pti.ast.nodes.ProgramNode;
 
 /**
@@ -88,7 +89,7 @@ public abstract class AbstractBuildTree {
 		currentNode.addChild(node);
 
 		// Voeg toe aan parent code-block als het niet de programnode is
-		if (!( currentNode instanceof ProgramNode))
+		if (!( currentNode instanceof ProgramNode) && ! (currentNode instanceof ElseNode))
 			currentNode.addCode(node);
 		
 		// Vervang huidige node:
@@ -110,7 +111,7 @@ public abstract class AbstractBuildTree {
 				debugMsg("<-- Pop from node ("
 						+ ((AbstractParamNode) currentNode).getName() + ")");
 			else
-				debugMsg("--> Pop from "
+				debugMsg("<-- Pop from "
 						+ currentNode.getClass().getSimpleName());
 
 			currentNode = (AbstractScopeNode) currentNode.getParent();

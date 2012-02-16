@@ -2,11 +2,16 @@ package saxion.pti.ast.nodes;
 
 import saxion.pti.ast.AbstractVisitTree;
 
-public class IfNode extends AbstractScopeNode implements IStackNode, IStatementNode{
+public class IfNode extends AbstractScopeNode implements IStackNode,
+		IStatementNode {
 	private ExpressionNode statement;
-	
+
 	private Integer stackNumber = null;
-	
+
+	public IfNode(AbstractScopeNode parent) {
+		super(parent);
+	}
+
 	public IfNode(AbstractScopeNode parent, ExpressionNode statement) {
 		super(parent);
 		this.statement = statement;
@@ -20,7 +25,8 @@ public class IfNode extends AbstractScopeNode implements IStackNode, IStatementN
 	}
 
 	/**
-	 * @param statement the statement to set
+	 * @param statement
+	 *            the statement to set
 	 */
 	public void setStatement(ExpressionNode statement) {
 		this.statement = statement;
@@ -34,11 +40,6 @@ public class IfNode extends AbstractScopeNode implements IStackNode, IStatementN
 	@Override
 	public Integer getStackNumber() {
 		return stackNumber;
-	}
-
-	@Override
-	public boolean isGlobal() {
-		return stackNumber == null;
 	}
 
 	@Override

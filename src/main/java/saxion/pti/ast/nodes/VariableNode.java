@@ -107,11 +107,4 @@ public class VariableNode extends AbstractNode implements IStackNode {
 	public void setStackNumber(Integer stackNumber) {
 		this.stackNumber = stackNumber;
 	}
-
-	/**
-	 * Is dit in een eigen scope of global?
-	 */
-	public boolean isGlobal() {
-		return stackNumber == null;
-	}
 }

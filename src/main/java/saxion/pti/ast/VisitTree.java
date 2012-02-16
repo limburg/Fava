@@ -6,6 +6,7 @@ import saxion.pti.ast.nodes.AbstractScopeNode;
 import saxion.pti.ast.nodes.AssignmentNode;
 import saxion.pti.ast.nodes.CallNode;
 import saxion.pti.ast.nodes.CallVarNode;
+import saxion.pti.ast.nodes.ElseNode;
 import saxion.pti.ast.nodes.ExpressionNode;
 import saxion.pti.ast.nodes.FunctionNode;
 import saxion.pti.ast.nodes.IStackNode;
@@ -55,12 +56,12 @@ public class VisitTree extends AbstractVisitTree {
 	 * VariableNode
 	 */
 	public void visit(VariableNode varNode) {
-		// TODO
-		if (varNode.isGlobal()) {
+		if (varNode.getParent() instanceof ProgramNode) {
 			if (varNode.getType().equals(String.class)) {
-				// TODO
+				addCode(".field private " + varNode.getName()
+						+ " Ljava/lang/String;");
 			} else {
-				// TODO
+				addCode(".field private " + varNode.getName() + " I");
 			}
 		} else {
 			if (varNode.getExpression() != null) {
@@ -86,27 +87,31 @@ public class VisitTree extends AbstractVisitTree {
 	}
 
 	public void visit(AssignmentNode assignmentNode) {
-		// TODO
 		AbstractScopeNode scope = (AbstractScopeNode) assignmentNode
 				.getParent();
-
+		// Verkrijg referentie van variabele
 		VariableNode varNode = scope.getVariable(assignmentNode.getVariable());
 
-		if (varNode.isGlobal()) {
-			if (varNode.getType().equals(String.class)) {
-				// TODO
-			} else {
-				// TODO
-			}
+		if (varNode.getParent() instanceof ProgramNode)
+			addCode("  aload 0");
+
+		// Bezoek assignment code
+		assignmentNode.getExpression().accept(this);
+
+		// Sla resultaten op
+		if (varNode.getParent() instanceof ProgramNode) {
+			String type = "I";
+
+			if (varNode.getType().equals(String.class))
+				type = "Ljava/lang/String;";
+
+			addCode("  putfield " + getProgramName() + "/" + varNode.getName()
+					+ " " + type);
+
 		} else {
 			if (varNode.getType().equals(String.class)) {
-				// TODO
-				// addCode("  aload " + varNode.getStackNumber());
-				assignmentNode.getExpression().accept(this);
 				addCode("  astore " + varNode.getStackNumber());
 			} else {
-				// addCode("  iload " + varNode.getStackNumber());
-				assignmentNode.getExpression().accept(this);
 				addCode("  istore " + varNode.getStackNumber());
 			}
 		}
@@ -153,6 +158,8 @@ public class VisitTree extends AbstractVisitTree {
 			returnType = "V";
 		}
 
+		addCode("  aload 0");
+
 		// Bezoek parameters, mits aanwezig.
 		for (ExpressionNode e : callNode.getParameters())
 			e.accept(this);
@@ -167,10 +174,20 @@ public class VisitTree extends AbstractVisitTree {
 		VariableNode vNode = ((AbstractScopeNode) callVarNode.getParent())
 				.getVariable(callVarNode.getName());
 		if (vNode.getType().equals(String.class)) {
-			// TODO
-			addCode("  aload " + vNode.getStackNumber());
+			if (vNode.getParent() instanceof ProgramNode) {
+				addCode("  aload 0");
+				addCode("  getfield " + getProgramName() + "/"
+						+ vNode.getName() + " Ljava/lang/String;");
+			} else {
+				addCode("  aload " + vNode.getStackNumber());
+			}
 		} else {
-			addCode("  iload " + vNode.getStackNumber());
+			if (vNode.getParent() instanceof ProgramNode) {
+				addCode("  aload 0");
+				addCode("  getfield " + getProgramName() + "/"
+						+ vNode.getName() + " I");
+			} else
+				addCode("  iload " + vNode.getStackNumber());
 		}
 	}
 
@@ -178,6 +195,9 @@ public class VisitTree extends AbstractVisitTree {
 		// Strings appenden
 		boolean appendToString = expressionNode.getSymbol() != null
 				&& expressionNode.getType().equals(String.class);
+
+		if (expressionNode.getValue() instanceof ExpressionNode)
+			System.out.println("Yep");
 
 		if (appendToString) {
 			addCode("  new java/lang/StringBuffer");
@@ -250,6 +270,7 @@ public class VisitTree extends AbstractVisitTree {
 					addCode("  if_icmpge start" + stackNumber);
 					break;
 				}
+
 				}
 			}
 		}
@@ -266,15 +287,49 @@ public class VisitTree extends AbstractVisitTree {
 	}
 
 	public void visit(IfNode ifNode) {
-		// TODO
-		addCode(" if" + ifNode.getStackNumber() + ":");
+		if (!(ifNode instanceof ElseNode)) {
+			boolean blankElse = false;
 
-		// Bezoek statement
-		if (ifNode.getStatement() != null)
-			ifNode.getStatement().accept(this);
+			// Bezoek statement
+			if (ifNode.getStatement() != null)
+				ifNode.getStatement().accept(this);
+
+			// Bezoek else
+			for (AbstractScopeNode node : ifNode.getChilds()) {
+				if (node instanceof ElseNode) {
+					ElseNode eNode = ((ElseNode) node);
+					eNode.setStackNumber(getNewLabelNumber());
+
+					if (eNode.getStatement() != null) {
+						eNode.getStatement().accept(this);
+					} else {
+						blankElse = true;
+						addCode("  goto start" + eNode.getStackNumber());
+					}
+				}
+			}
+
+			if (!blankElse)
+				addCode("  goto done" + ifNode.getStackNumber());
+		}
+
+		// Bezoek iedere else child
+		for (AbstractScopeNode node : ifNode.getChilds()) {
+			if (node instanceof ElseNode)
+				node.accept(this);
+		}
 
 		// Bezoek code
+		addCode(" start" + ifNode.getStackNumber() + ":");
 		executeStackCode(ifNode.getCode());
+
+		if (ifNode instanceof ElseNode)
+			addCode("  goto done"
+					+ ((IfNode) ifNode.getParent()).getStackNumber());
+		else {
+			// Einde
+			addCode(" done" + ifNode.getStackNumber() + ":");
+		}
 	}
 
 	public void visit(PrintNode printNode) {
@@ -296,8 +351,16 @@ public class VisitTree extends AbstractVisitTree {
 	}
 
 	public void visit(ProgramNode programNode) {
+		// Header
 		addCode(".class public " + getProgramName());
 		addCode(".super java/lang/Object");
+		addCode("");
+
+		// Bezoek globale vars
+		visitVariableNodes(programNode.getVariables(), 0);
+		addCode("");
+
+		// Main entry
 		addCode(".method public <init>()V");
 		addCode("  aload_0 ; push this");
 		addCode("  invokespecial java/lang/Object/<init>()V ; call super");
@@ -312,8 +375,7 @@ public class VisitTree extends AbstractVisitTree {
 		addCode("  invokevirtual " + getProgramName() + "/main()V");
 		addCode("  return");
 		addCode(".end method");
-		// Bezoek globale vars
-		visitVariableNodes(programNode.getVariables(), 0);
+		addCode("");
 
 		// Bezoek procs/funcs
 		for (AbstractNode n : programNode.getChilds())
